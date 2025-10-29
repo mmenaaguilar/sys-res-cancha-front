@@ -1,0 +1,11 @@
+{
+  "development": {
+    "apiUrl": "http://localhost:8000/api",
+    "debugMode": true
+  },
+  "production": {
+    "apiUrl": "https://api.tudominio.com/api",
+    "debugMode": false
+  },
+  "default": "development"
+}
