@@ -1,0 +1,6 @@
+# Ignorar dependencias de Node
+/node_modules
+
+# Ignorar archivos específicos de NPM
+/npm-debug.log
+.DS_Store # Ignorar archivos de macOS

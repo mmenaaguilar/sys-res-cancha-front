@@ -1,0 +1,25 @@
+{
+  "name": "sistema-reservas-canchas",
+  "version": "1.0.0",
+  "description": "Front-end de sistema de reservas de canchas deportivas usando Vanilla JS y Router.",
+  "main": "js/app.js",
+  "private": true,
+  "scripts": {
+    "start": "lite-server",
+    "serve": "npm start",
+    "build": "echo \"No build step required for Vanilla JS. Files are ready.\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "vanillajs",
+    "javascript-nativo",
+    "reservas",
+    "router"
+  ],
+  "author": "Tu Nombre",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "lite-server": "^2.6.1"
+  }
+}
