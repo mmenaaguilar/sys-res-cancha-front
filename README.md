@@ -10,10 +10,10 @@ Para ejecutar este proyecto, necesitas tener **Node.js** (versión 16+) y **Git*
 
 Clona el repositorio desde GitHub y navega a la carpeta:
 
-[git clone [https://github.com/mmenaaguilar/sys-res-cancha-front.git](https://github.com/mmenaaguilar/sys-res-cancha-front.git)](https://github.com/mmenaaguilar/sys-res-cancha-front.git)
+https://github.com/mmenaaguilar/sys-res-cancha-front.git
 cd sys-res-cancha-front
 
-### 1. Inicializar el proyecto
+### 2. Inicializar el proyecto
 
 Clona el repositorio desde GitHub y navega a la carpeta:
 
