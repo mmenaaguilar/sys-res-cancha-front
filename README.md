@@ -14,10 +14,10 @@ https://github.com/mmenaaguilar/sys-res-cancha-front.git
 
 ### 2. Inicializar el proyecto
 
-Clona el repositorio desde GitHub y navega a la carpeta:
+Para inicializar el proyecto debes traer las dependencias del proyecto con:
 
 npm install
 
-### Ejecución Local (Development)
+Para ejecución Local (Development):
 
 npm start
