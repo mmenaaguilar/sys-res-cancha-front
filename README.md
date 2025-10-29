@@ -1,4 +1,4 @@
-##SYS-RESER-CANCHA-FRONT
+## SYS-RESER-CANCHA-FRONT
 
 Este repositorio contiene el código Front-end para el Sistema de Reservas de Canchas. Es una **Single Page Application (SPA)** implementada completamente con **Vanilla JavaScript** (ES Modules) y un Router basado en la API History del navegador.
 
