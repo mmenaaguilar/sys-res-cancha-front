@@ -13,7 +13,7 @@ const homeView = {
           </div>
           <nav aria-label="Navegación principal">
             <a href="#" onclick="router.navigate('/software')">Software para clubes</a>
-            <a href="#" onclick="router.navigate('/contact')">Contacto</a>
+            <a href="#" onclick="router.navigate('/contact')">Resevas</a>
             <button type="button" class="btn" onclick="window.openLoginModal()">
             Iniciar sesión
             </button>
