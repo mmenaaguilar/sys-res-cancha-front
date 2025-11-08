@@ -370,22 +370,48 @@ footer {
   color: #fff;
 }
 
-/* Toggle contraseña */
-.toggle-password {
-  position: absolute;
-  right: 10px;
-  top: 32px;
-  background: none;
-  border: none;
-  color: var(--muted);
-  cursor: pointer;
-  font-size: 14px;
-}
+/* --- ✅ ESTILOS ACTUALIZADOS PARA EL BOTÓN DE MOSTRAR/OCULTAR CONTRASEÑA --- */
 
+/* Hacemos el contenedor relativo para posicionar el botón dentro */
 .field {
   position: relative;
 }
 
-.field input {
-  padding-right: 40px; /* espacio para el icono */
+/* Añadimos espacio dentro del input para que el texto no quede debajo del icono */
+.field .input[type="password"],
+.field .input[id*="PasswordConfirm"] { /* Afecta a los inputs de contraseña y confirmación */
+  padding-right: 45px;
+}
+
+/* Estilo y posicionamiento del botón del ojo */
+.toggle-password {
+  position: absolute;
+  right: 10px; /* Distancia desde el borde derecho */
+  bottom: 10px; /* Coincide con el padding-bottom del .field */
+  height: 40px; /* Coincide con la altura del .input para un centrado perfecto */
+
+  /* Apariencia de botón sin bordes */
+  background: none;
+  border: none;
+  padding: 0 4px; /* Un poco de espacio lateral */
+  cursor: pointer;
+
+  /* Centra el icono SVG dentro del botón */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Color y transición del icono */
+  color: var(--muted);
+  transition: color 0.2s ease-in-out;
+}
+
+.toggle-password:hover {
+  color: #fff;
+}
+
+/* Tamaño del icono SVG */
+.toggle-password svg {
+  width: 18px;
+  height: 18px;
 }

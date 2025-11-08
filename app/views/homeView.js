@@ -1,4 +1,5 @@
 // app/views/homeView.js
+
 const homeView = {
   render: () => {
     return `
@@ -12,8 +13,8 @@ const homeView = {
             </div>
           </div>
           <nav aria-label="Navegación principal">
-            <a href="#" onclick="router.navigate('/software')">Software para clubes</a>
-            <a href="#" onclick="router.navigate('/contact')">Contacto</a>
+            <a href="/software">Software para clubes</a>
+            <a href="/contact">Contacto</a>
             <button type="button" class="btn" onclick="window.openLoginModal()">
             Iniciar sesión
             </button>
@@ -84,7 +85,7 @@ const homeView = {
               <strong>Ranking de las mejores canchas</strong>
               <div class="small">Te mostramos las mejores canchas de Perú.</div>
             </div>
-            <a href="#" class="btn" onclick="router.navigate('/ranking')">Ver ranking</a>
+            <a href="/ranking" class="btn">Ver ranking</a>
           </section>
 
           <section class="card" style="margin-top:18px" aria-labelledby="faq-title">
@@ -119,8 +120,8 @@ const homeView = {
               <p class="small" style="margin-top:8px">Software para gestión de complejos deportivos y app para reservas en Perú.</p>
               <p class="small" style="margin-top:8px">contacto@resersport.io</p>
               <div class="footer-links">
-                <a href="#" onclick="router.navigate('/privacy')">Políticas de privacidad</a>
-                <a href="#" onclick="router.navigate('/terms')">Términos</a>
+                <a href="/privacy">Políticas de privacidad</a>
+                <a href="/terms">Términos</a>
               </div>
             </div>
             <div>
@@ -136,7 +137,7 @@ const homeView = {
           </div>
         </footer>
 
-        <!-- ✅ MODAL DE LOGIN -->
+        <!-- MODAL DE LOGIN -->
         <div id="loginModal" class="modal" style="display:none">
           <div class="modal-overlay" onclick="window.closeLoginModal()"></div>
           <div class="modal-content card">
@@ -150,10 +151,9 @@ const homeView = {
               <div class="field" style="position:relative;">
               <label for="loginPassword" class="small">Contraseña</label>
               <input type="password" id="loginPassword" class="input" required minlength="6" />
-              <button type="button" class="toggle-password" 
-                      onclick="togglePasswordVisibility('loginPassword')">
-                👁️
-              </button>
+              <button type="button" class="toggle-password" id="toggleLoginPassword"
+                        onclick="togglePasswordVisibility('loginPassword', 'toggleLoginPassword')">
+                </button>
             </div>
             <div style="text-align:center; margin-top:16px">
               <span class="small">¿No tienes cuenta?</span>
@@ -166,7 +166,7 @@ const homeView = {
     `;
   },
 
-  attachEventListeners: () => {
+attachEventListeners: () => {
     // Año en el footer
     const yearEl = document.getElementById('year');
     if (yearEl) {
@@ -224,7 +224,28 @@ const homeView = {
       });
     });
 
-    // ✅ FUNCIONES DEL MODAL DE LOGIN
+    const eyeIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="http://www.w3.org/2000/svg"><path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/><path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/></svg>`;
+    const eyeSlashIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="http://www.w3.org/2000/svg"><path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.029 7.029 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.089z"/><path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12-.708.708z"/></svg>`;
+
+    const toggleLoginBtn = document.getElementById('toggleLoginPassword');
+    if (toggleLoginBtn) {
+      toggleLoginBtn.innerHTML = eyeSlashIconSVG;
+    }
+
+    window.togglePasswordVisibility = (fieldId, buttonId) => {
+      const field = document.getElementById(fieldId);
+      const button = document.getElementById(buttonId);
+      if (field && button) {
+        if (field.type === 'password') {
+          field.type = 'text';
+          button.innerHTML = eyeIconSVG;
+        } else {
+          field.type = 'password';
+          button.innerHTML = eyeSlashIconSVG;
+        }
+      }
+    };
+    
     window.openLoginModal = () => {
       const modal = document.getElementById('loginModal');
       if (modal) {
@@ -241,7 +262,6 @@ const homeView = {
       }
     };
 
-    // Cerrar modal con tecla Escape
     const handleEscape = (e) => {
       if (e.key === 'Escape') {
         const modal = document.getElementById('loginModal');
@@ -252,42 +272,27 @@ const homeView = {
     };
     document.addEventListener('keydown', handleEscape);
 
-    // Formulario de login (solo frontend)
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
       loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
-
-        // ✅ Simulación visual (en el futuro: llamada a API)
         alert(`¡Has iniciado sesión con ${email}!`);
         window.closeLoginModal();
-
-        // 👉 Aquí iría: router.navigate('/dashboard');
       });
     }
 
     const registerLink = document.getElementById('registerLink');
     if (registerLink) {
-    registerLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    window.closeLoginModal();
-    window.router.navigate('#/register');
-    });
+      registerLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.closeLoginModal();
+        window.router.navigate('/register');
+      });
     }
-        // Función para mostrar/ocultar contraseña
-    window.togglePasswordVisibility = (fieldId) => {
-      const field = document.getElementById(fieldId);
-      if (field) {
-        field.type = field.type === 'password' ? 'text' : 'password';
-      }
-    };
 
     console.log("HomeView: Event Listeners adjuntados.");
   },
-
-  
 };
 
 export default homeView;

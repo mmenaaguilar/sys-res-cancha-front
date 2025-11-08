@@ -1,42 +1,44 @@
 // js/router.js
+
 import homeView from "./views/homeView.js";
 import myReservationsView from "./views/myReservationsView.js";
 import registerView from "./views/registerView.js";
 import notFoundView from "./views/notFoundView.js";
 
 const routes = {
-  "#/": homeView,
-  "#/reservations": myReservationsView,
-  "#/register": registerView,
-  "#/software": homeView,
-  "#/contact": homeView,
-  "#/ranking": homeView,
-  "#/privacy": homeView,
-  "#/terms": homeView,
+  "/": homeView,
+  "/home": homeView,
+  "/reservations": myReservationsView,
+  "/register": registerView,
+  "/software": homeView,
+  "/contact": homeView,
+  "/ranking": homeView,
+  "/privacy": homeView,
+  "/terms": homeView,
 };
 
 const handleLocation = () => {
-  let path = window.location.hash;
+  // 2. Usa window.location.pathname
+  let path = window.location.pathname;
 
-  // Normaliza rutas vacías o inválidas a la raíz
-  if (!path || path === "#" || path === "") {
-    path = "#/";
-    window.history.replaceState(null, "", path); // corrige la URL sin recargar
+  if (path === "") {
+    path = "/";
   }
 
   const view = routes[path] || notFoundView;
   const viewContainer = document.getElementById("app-content");
-  viewContainer.innerHTML = view.render();
-  if (typeof view.attachEventListeners === "function") {
-    view.attachEventListeners();
+  if (viewContainer) {
+    viewContainer.innerHTML = view.render();
+    if (typeof view.attachEventListeners === "function") {
+      view.attachEventListeners();
+    }
+  } else {
+    console.error("El contenedor 'app-content' no fue encontrado.");
   }
 };
 
 const navigate = (pathname) => {
-  if (!pathname.startsWith("#")) {
-    pathname = "#" + pathname;
-  }
-  window.history.pushState(null, "", pathname);
+  window.history.pushState({}, "", pathname);
   handleLocation();
 };
 
