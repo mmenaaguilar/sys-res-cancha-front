@@ -87,11 +87,11 @@ nav a:hover {
 
 /* Hero */
 .hero {
-  display: grid;
-  grid-template-columns: 1fr 420px;
-  gap: 28px;
-  align-items: center;
-  margin-top: 28px;
+  position: relative; /* Clave para posicionar los hijos (fondo y contenido) */
+  display: block; /* Sobrescribimos el grid temporalmente */
+  padding: 60px 0; /* Espaciado interno vertical */
+  border-radius: var(--radius);
+  overflow: hidden; /* Oculta lo que se salga del borde redondeado */
 }
 
 .hero h1 {
@@ -104,6 +104,66 @@ nav a:hover {
   color: var(--muted);
   margin: 0 0 20px;
   font-size: 1.05rem;
+}
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Detrás del contenido */
+}
+
+/* 3. Estilos específicos para el carrusel Swiper */
+.hero-swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.hero-swiper .swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Asegura que la imagen cubra todo el espacio */
+  /* Opcional: añade un efecto de zoom sutil */
+  animation: zoom-effect 20s infinite alternate;
+}
+
+@keyframes zoom-effect {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
+}
+
+/* 4. Capa oscura para mejorar el contraste del texto */
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(7, 17, 38, 0.7); /* Ajusta la opacidad según necesites */
+  z-index: 2;
+}
+
+/* 5. Contenido superpuesto */
+.hero-content {
+  position: relative; /* Para que se ponga encima del fondo */
+  z-index: 3;
+  
+  /* Replicamos el layout de grid que tenías */
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 28px;
+  align-items: center;
+  
+  /* Añadimos padding para que no se pegue a los bordes */
+  padding: 0 24px;
+}
+
+/* Ajustes responsivos para el nuevo layout */
+@media (max-width: 980px) {
+  .hero-content {
+    grid-template-columns: 1fr;
+  }
 }
 
 .cities {

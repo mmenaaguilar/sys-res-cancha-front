@@ -23,13 +23,38 @@ const homeView = {
 
         <main>
           <section class="hero" aria-labelledby="hero-title">
-            <div>
-              <h1 id="hero-title">Reserva tu cancha al instante</h1>
-              <p>Explora canchas disponibles en tu ciudad y en tiempo real. Busca por deporte, fecha y horario — gestiona reservas desde la app o la web.</p>
-              <div class="cities">
-                <strong>Presente en:</strong> Tacna | Moquegua | Arequipa | Lima | Cusco | más
+            
+            <!-- Contenedor del Carrusel (fondo) -->
+            <div class="hero-background">
+              <div class="swiper hero-swiper">
+                <div class="swiper-wrapper">
+                  <!-- Slide 1 -->
+                  <div class="swiper-slide">
+                    <img src="assets/images/futbol.jpg" alt="Cancha de fútbol iluminada">
+                  </div>
+                  <!-- Slide 2 -->
+                  <div class="swiper-slide">
+                    <img src="assets/images/voley.jpg" alt="Cancha de voley">
+                  </div>
+                  <!-- Slide 3 -->
+                  <div class="swiper-slide">
+                    <img src="assets/images/tenis.jpg" alt="Cancha de tenis de arcilla">
+                  </div>
+                </div>
               </div>
+              <!-- Capa oscura para mejorar legibilidad del texto -->
+              <div class="hero-overlay"></div>
             </div>
+
+            <!-- Contenido Superpuesto -->
+            <div class="hero-content">
+              <div>
+                <h1 id="hero-title">Reserva tu cancha al instante</h1>
+                <p>Explora canchas disponibles en tu ciudad y en tiempo real. Busca por deporte, fecha y horario — gestiona reservas desde la app o la web.</p>
+                <div class="cities">
+                  <strong>Presente en:</strong> Tacna | Moquegua | Arequipa | Lima | Cusco | más
+                </div>
+              </div>
 
             <aside class="card">
               <form id="searchForm" class="search" novalidate>
@@ -166,7 +191,28 @@ const homeView = {
     `;
   },
 
+
 attachEventListeners: () => {
+    // 1. INICIALIZACIÓN DEL CARRUSEL (se mueve al principio)
+    try {
+        const swiper = new Swiper('.hero-swiper', {
+            loop: true,
+            effect: 'fade',
+            fadeEffect: {
+                crossFade: true
+            },
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+        });
+        console.log("Swiper inicializado correctamente.");
+    } catch (error) {
+        console.error("Error al inicializar Swiper:", error);
+    }
+
+    // --- EL RESTO DEL CÓDIGO ---
+
     // Año en el footer
     const yearEl = document.getElementById('year');
     if (yearEl) {
@@ -224,28 +270,32 @@ attachEventListeners: () => {
       });
     });
 
-    const eyeIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="http://www.w3.org/2000/svg"><path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/><path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/></svg>`;
-    const eyeSlashIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="http://www.w3.org/2000/svg"><path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.029 7.029 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.089z"/><path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12-.708.708z"/></svg>`;
+    // 2. Definición de iconos con viewBox CORRECTO
+    const eyeIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/><path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/></svg>`;
+    const eyeSlashIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.029 7.029 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.089z"/><path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12-.708.708z"/></svg>`;
 
+    // 3. Insertamos el icono inicial (ojo tachado)
     const toggleLoginBtn = document.getElementById('toggleLoginPassword');
     if (toggleLoginBtn) {
       toggleLoginBtn.innerHTML = eyeSlashIconSVG;
     }
 
+    // 4. Lógica de visibilidad corregida (función global)
     window.togglePasswordVisibility = (fieldId, buttonId) => {
       const field = document.getElementById(fieldId);
       const button = document.getElementById(buttonId);
       if (field && button) {
         if (field.type === 'password') {
           field.type = 'text';
-          button.innerHTML = eyeIconSVG;
+          button.innerHTML = eyeIconSVG; // Muestra ojo abierto
         } else {
           field.type = 'password';
-          button.innerHTML = eyeSlashIconSVG;
+          button.innerHTML = eyeSlashIconSVG; // Muestra ojo tachado
         }
       }
     };
     
+    // FUNCIONES DEL MODAL DE LOGIN
     window.openLoginModal = () => {
       const modal = document.getElementById('loginModal');
       if (modal) {
@@ -262,6 +312,7 @@ attachEventListeners: () => {
       }
     };
 
+    // Cerrar modal con tecla Escape
     const handleEscape = (e) => {
       if (e.key === 'Escape') {
         const modal = document.getElementById('loginModal');
@@ -272,6 +323,7 @@ attachEventListeners: () => {
     };
     document.addEventListener('keydown', handleEscape);
 
+    // Formulario de login
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
       loginForm.addEventListener('submit', (e) => {
@@ -282,6 +334,7 @@ attachEventListeners: () => {
       });
     }
 
+    // Enlace para ir al registro
     const registerLink = document.getElementById('registerLink');
     if (registerLink) {
       registerLink.addEventListener('click', (e) => {
