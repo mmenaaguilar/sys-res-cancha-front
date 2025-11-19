@@ -4,12 +4,14 @@ import homeView from "./views/homeView.js";
 import myReservationsView from "./views/myReservationsView.js";
 import registerView from "./views/registerView.js";
 import notFoundView from "./views/notFoundView.js";
+import adminView from "./views/adminView.js";
 
 const routes = {
   "/": homeView,
   "/home": homeView,
   "/reservations": myReservationsView,
   "/register": registerView,
+  "/admin": adminView,
   "/software": homeView,
   "/contact": homeView,
   "/ranking": homeView,
