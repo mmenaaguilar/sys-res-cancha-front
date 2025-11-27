@@ -1,0 +1,86 @@
+/* Inputs Básicos */
+.field {
+  display: flex; flex-direction: column; gap: 6px;
+  position: relative;
+}
+.field label { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+
+.input, .select {
+  width: 100%; height: 44px; padding: 0 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  color: #fff; font-size: 1rem; outline: none;
+  transition: var(--transition);
+}
+.input:focus, .select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(0, 183, 125, 0.1);
+}
+
+/* Toggle Password Eye */
+.toggle-password {
+  position: absolute; right: 10px; bottom: 2px; height: 40px;
+  background: none; border: none; color: var(--text-muted); cursor: pointer;
+  display: flex; align-items: center;
+}
+.field .input[type="password"] { padding-right: 40px; }
+
+/* Switch Toggle (Estado) */
+.status-toggle {
+  position: relative; display: inline-flex; align-items: center;
+  width: 96px; height: 28px; border-radius: 30px;
+  cursor: pointer; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.5px;
+  user-select: none; transition: all 0.3s ease;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+.status-toggle.active {
+  background-color: rgba(16, 185, 129, 0.2); color: #10b981;
+  justify-content: flex-start; padding-left: 10px; border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.status-toggle.inactive {
+  background-color: rgba(239, 68, 68, 0.2); color: #ef4444;
+  justify-content: flex-end; padding-right: 10px; border: 1px solid rgba(239, 68, 68, 0.3);
+}
+.status-toggle::after {
+  content: ''; position: absolute; top: 3px; width: 20px; height: 20px;
+  border-radius: 50%; background: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3); transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+.status-toggle.active::after { right: 3px; left: auto; background: #10b981; box-shadow: 0 0 8px rgba(16, 185, 129, 0.6); }
+.status-toggle.inactive::after { left: 3px; right: auto; background: #ef4444; }
+.status-toggle:hover { filter: brightness(1.1); }
+
+/* Selectores Personalizados (Dropdowns) */
+.custom-select-wrapper { position: relative; width: 100%; cursor: pointer; }
+.custom-trigger { display: flex; align-items: center; justify-content: space-between; width: 100%; font-weight: 500; color: #334155; user-select: none; }
+.custom-options {
+  position: absolute; top: 140%; left: 0; width: 240px;
+  background: #fff; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  padding: 8px; opacity: 0; visibility: hidden;
+  transform: translateY(-10px); transition: all 0.2s ease; z-index: 100; border: 1px solid #e2e8f0;
+}
+.custom-options.open { opacity: 1; visibility: visible; transform: translateY(0); }
+.custom-option {
+  padding: 10px 12px; border-radius: 8px; display: flex; align-items: center; gap: 10px;
+  transition: background 0.2s; color: #475569;
+}
+.custom-option:hover { background: #f1f5f9; color: var(--accent-hover); }
+.custom-option.selected { background: rgba(0, 183, 125, 0.1); color: var(--accent); font-weight: 600; }
+
+/* Fecha Inteligente */
+.date-picker-ui { padding: 12px; }
+.quick-dates { display: flex; gap: 8px; margin-bottom: 12px; }
+.quick-date-btn {
+  flex: 1; padding: 8px; border: 1px solid #e2e8f0; background: #fff;
+  border-radius: 20px; font-size: 0.85rem; cursor: pointer; text-align: center;
+  transition: all 0.2s; color: var(--muted);
+}
+.quick-date-btn.active { border-color: var(--accent); color: var(--accent); font-weight: bold; background: rgba(0, 183, 125, 0.05); }
+.native-date-wrapper label { display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 4px; }
+.native-date-wrapper input { width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 8px; color: #334155; }
+
+/* Form Grid en Modal */
+.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-col-span-2 { grid-column: span 2; }
+@media (max-width: 768px) { .form-grid-2 { grid-template-columns: 1fr; } .form-col-span-2 { grid-column: span 1; } }
