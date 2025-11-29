@@ -1,0 +1,38 @@
+:root {
+    /* Aseguramos que el color esté disponible aquí si usas variables */
+    --bg-dark: #071126; 
+}
+
+html, body {
+    height: 100%;
+    background-color: #071126; /* COLOR HARDCODEADO PARA EVITAR FLASH */
+    background: var(--bg-dark); /* Luego aplica la variable */
+    margin: 0;
+    padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: linear-gradient(180deg, var(--bg-dark) 0%, #071827 60%);
+  color: var(--text-main);
+  font-family: var(--font-main);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { text-decoration: none; color: inherit; transition: var(--transition); }
+ul { list-style: none; }
+img { max-width: 100%; display: block; }
+
+/* Contenedor Principal Global */
+.container {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 32px 24px;
+  width: 100%;
+}

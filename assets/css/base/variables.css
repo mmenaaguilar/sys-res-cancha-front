@@ -1,0 +1,22 @@
+:root {
+  /* Paleta de Colores */
+  --bg: #0f1724;
+  --bg-dark: #071126;
+  --bg-card: #0b1220;
+  --accent: #00b77d;
+  --accent-hover: #009e6b;
+  --text-main: #e6eef6;
+  --text-muted: #94a3b8;
+  
+  /* Efectos */
+  --glass: rgba(255, 255, 255, 0.04);
+  --border-light: rgba(255, 255, 255, 0.05);
+  --shadow: 0 6px 20px rgba(2,6,23,0.5);
+  
+  /* Layout & Tipografía */
+  --maxw: 1100px;
+  --radius: 12px;
+  --header-height: 70px;
+  --transition: all 0.3s ease;
+  --font-main: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+}

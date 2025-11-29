@@ -1,30 +1,25 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Reservas de Canchas</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <base href="/" /> 
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ReserSport - Reserva tu cancha</title>
+  <meta name="description" content="Reserva canchas al instante. App y software de gestión para complejos deportivos en LATAM." />
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Hoja de estilos global -->
+  <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
+  <div id="app-content"></div>
 
-    <header>
-        <nav class="main-nav">
-            <div class="nav-links">
-                <a href="/" data-route="/">Buscar Canchas</a>
-                <a href="/reservations" data-route="/reservations">Mis Reservas</a>
-                <a href="/admin" data-route="/admin">Admin</a>
-            </div>
-        </nav>
-    </header>
-
-    <main id="app-content" class="container"></main>
-
-    <footer>
-        <p>&copy; 2025 Sistema de Reservas</p>
-    </footer>
-
-    <script type="module" src="app/app.js"></script>
-
+  <!-- Script principal con módulos -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script type="module" src="app/app.js"></script>
 </body>
 </html>

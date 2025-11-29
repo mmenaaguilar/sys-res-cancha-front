@@ -1,0 +1,47 @@
+.datagrid-container {
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.05);
+  overflow-x: auto;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.datagrid, .admin-table {
+  width: 100%; border-collapse: collapse; text-align: left; min-width: 600px;
+}
+
+.datagrid thead, .admin-table thead {
+  background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.datagrid th, .admin-table th {
+  padding: 16px; font-size: 0.75rem; text-transform: uppercase;
+  letter-spacing: 0.05em; color: var(--muted); font-weight: 600;
+}
+
+.datagrid td, .admin-table td {
+  padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.02);
+  color: #e2e8f0; font-size: 0.9rem; vertical-align: middle;
+}
+
+.datagrid tr:last-child td { border-bottom: none; }
+.datagrid tr:hover { background: rgba(255,255,255,0.02); }
+
+/* Badges */
+.status { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+.status.active { background: rgba(0, 183, 125, 0.15); color: var(--accent); }
+.status.inactive { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+
+/* Paginación */
+.datagrid-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2);
+}
+.pagination { display: flex; gap: 5px; }
+.page-btn {
+  padding: 6px 12px; border-radius: 6px; background: transparent;
+  border: 1px solid rgba(255,255,255,0.1); color: var(--muted); cursor: pointer; font-size: 0.85rem;
+}
+.page-btn:hover:not(:disabled) { background: rgba(255,255,255,0.05); color: white; }
+.page-btn.active { background: var(--accent); color: #04121a; border-color: var(--accent); font-weight: bold; }
+.page-btn:disabled { opacity: 0.5; cursor: not-allowed; }

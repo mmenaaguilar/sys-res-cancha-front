@@ -1,0 +1,41 @@
+.modal {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  display: none; align-items: center; justify-content: center;
+}
+.modal[style*="flex"] { display: flex; }
+
+.modal-content {
+  width: 90%; max-width: 420px;
+  background: var(--bg-card);
+  padding: 32px;
+  position: relative;
+  animation: slideUp 0.3s ease;
+}
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.modal-close {
+  position: absolute; top: 16px; right: 16px;
+  background: none; border: none; color: var(--text-muted);
+  font-size: 28px; cursor: pointer;
+}
+
+/* Modal Partner (Negro/Degradado) */
+.modal-partner-content {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: white; border: 1px solid rgba(255,255,255,0.1);
+  max-width: 600px; text-align: center; position: relative; overflow: hidden;
+}
+.modal-partner-content::before {
+  content: ''; position: absolute; top: -50px; right: -50px;
+  width: 150px; height: 150px; background: var(--accent);
+  filter: blur(80px); opacity: 0.2; border-radius: 50%;
+}
+.partner-benefits-list {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+  margin: 25px 0; text-align: left;
+}
+.benefit-item { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: #cbd5e1; }
+.benefit-item svg { color: var(--accent); flex-shrink: 0; }

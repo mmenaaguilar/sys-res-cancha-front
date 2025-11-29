@@ -1,0 +1,139 @@
+/* =========================================
+   ADMIN LAYOUT (PIXEL PERFECT)
+   ========================================= */
+
+.admin-layout {
+    display: flex;
+    height: 100vh; /* Altura fija de ventana */
+    overflow: hidden; /* Evita scroll doble */
+    background-color: #0b1220;
+}
+
+/* SIDEBAR FIJO A LA IZQUIERDA */
+.admin-sidebar {
+    width: 280px;
+    background-color: #0f1724;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    padding: 24px 0; /* Padding vertical, horizontal en hijos */
+    flex-shrink: 0;
+    height: 100%; /* Ocupa todo el alto */
+    z-index: 50;
+}
+
+.sidebar-header {
+    padding: 0 24px 30px 24px; /* Padding interno */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.sidebar-header img { width: 130px; margin-bottom: 5px; }
+.sidebar-header h3 { color: white; font-size: 1.1rem; margin: 0; font-weight: 700; letter-spacing: 0.5px; }
+
+/* NAVEGACIÓN CON SCROLL */
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    overflow-y: auto; /* Scroll solo en los botones si no caben */
+    padding: 0 12px; /* Espacio para que el scroll no tape */
+}
+
+/* Scrollbar bonita para el menú */
+.sidebar-nav::-webkit-scrollbar { width: 4px; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+.sidebar-nav a {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; color: #94a3b8; text-decoration: none;
+    font-weight: 500; font-size: 0.9rem; border-radius: 8px;
+    transition: all 0.2s ease;
+}
+.sidebar-nav a svg { width: 18px; height: 18px; opacity: 0.7; transition: 0.2s; }
+
+.sidebar-nav a:hover { background-color: rgba(255, 255, 255, 0.03); color: #e2e8f0; transform: translateX(4px); }
+.sidebar-nav a:hover svg { opacity: 1; color: var(--accent); }
+
+.sidebar-nav a.active {
+    background: linear-gradient(90deg, rgba(0, 183, 125, 0.1) 0%, transparent 100%);
+    color: var(--accent); border-left: 3px solid var(--accent);
+    border-radius: 4px 8px 8px 4px; font-weight: 600;
+}
+.sidebar-nav a.active svg { opacity: 1; color: var(--accent); }
+
+/* FOOTER DEL SIDEBAR */
+.sidebar-footer { padding: 20px 24px; border-top: 1px solid rgba(255,255,255,0.05); }
+
+/* CONTENIDO PRINCIPAL (DERECHA) */
+.admin-content {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto; /* Scroll principal aquí */
+    background-color: var(--bg-dark);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Cabeceras estandarizadas para alineación perfecta */
+.page-header { margin-bottom: 30px; min-height: 60px; /* Altura mínima para evitar saltos */ }
+.page-header h2 { font-size: 1.8rem; margin-bottom: 8px; color: white; line-height: 1.2; }
+.page-header p { color: var(--text-muted); margin: 0; font-size: 0.95rem; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .admin-layout { flex-direction: column; height: auto; overflow: visible; }
+    .admin-sidebar { width: 100%; height: auto; padding: 16px; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-header { padding: 0 0 15px 0; flex-direction: row; align-items: center; justify-content: space-between; }
+    .sidebar-header img { width: 100px; margin: 0; }
+    .sidebar-nav { flex-direction: row; overflow-x: auto; padding: 5px 0; gap: 10px; }
+    .sidebar-nav a { white-space: nowrap; padding: 8px 12px; font-size: 0.8rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); }
+    .sidebar-nav a.active { border-left: 1px solid var(--accent); background: rgba(0, 183, 125, 0.1); }
+    .sidebar-footer { display: none; }
+    .admin-content { padding: 20px; height: auto; overflow: visible; }
+}
+
+/* TOOLBAR Y BUSCADOR (AQUÍ ESTABA EL PROBLEMA POSIBLEMENTE) */
+.admin-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.admin-search-box {
+    position: relative;
+    width: 350px; /* Ancho fijo para escritorio */
+    max-width: 100%;
+}
+
+.admin-search-box svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    width: 18px;
+    height: 18px;
+    pointer-events: none;
+}
+
+.admin-search-box input {
+    width: 100%;
+    padding: 12px 12px 12px 45px; /* Padding izquierdo para el icono */
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: white;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.admin-search-box input:focus {
+    border-color: var(--accent);
+    background-color: rgba(255, 255, 255, 0.08);
+}
