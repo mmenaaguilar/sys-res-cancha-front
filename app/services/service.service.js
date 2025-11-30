@@ -2,18 +2,21 @@ import http from "./httpClient.js";
 
 export const serviceService = {
     
-    // Listar con filtros (igual que canchas)
     list: async (complejoId, page = 1, limit = 10, search = '') => {
         const payload = {
             complejo_id: parseInt(complejoId),
             page: page,
             limit: limit,
-            searchTerm: search || null
+            termino_busqueda: search || null
         };
         
+        console.log("📡 [Service] Pidiendo servicios con payload:", payload);
+
         try {
             const res = await http.request('/api/servicios/list', 'POST', payload);
+            console.log("📥 [Service] Respuesta del servidor:", res);
             
+            // Lógica de extracción de datos
             let lista = [];
             let total = 0;
 
@@ -23,12 +26,17 @@ export const serviceService = {
             } else if (res.data && Array.isArray(res.data)) {
                 lista = res.data;
                 total = res.total || lista.length;
+            } else if (res.data?.data && Array.isArray(res.data.data)) {
+                lista = res.data.data;
+                total = res.data.total || 0;
             }
 
             return { data: lista, total: total };
 
         } catch (e) {
-            console.error("Error listando servicios:", e);
+            // ⚠️ AQUÍ ESTÁ EL CAMBIO: Alerta visible para que veas el error
+            console.error("❌ Error Fatal en Servicios:", e);
+            alert("Error al cargar servicios: " + e.message); 
             return { data: [], total: 0 };
         }
     },
@@ -39,7 +47,7 @@ export const serviceService = {
             nombre: data.nombre,
             descripcion: data.descripcion || '',
             monto: parseFloat(data.monto),
-            estado: 'activo'
+            estado: data.estado || 'activo'
         };
         return await http.request('/api/servicios', 'POST', payload);
     },

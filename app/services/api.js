@@ -5,7 +5,9 @@ import { ubigeoService } from "./ubigeo.service.js";
 import { fieldService } from "./field.service.js";
 import { scheduleService } from "./schedule.service.js";
 import { contactService } from "./contact.service.js";
-import { serviceService } from "./service.service.js"; 
+import { serviceService } from "./service.service.js";
+import { serviceScheduleService } from "./serviceSchedule.service.js";
+import { policyService } from "./policy.service.js";
 
 
 const api = {
@@ -62,7 +64,20 @@ const api = {
     createServicio: serviceService.create,
     updateServicio: serviceService.update,
     toggleStatusServicio: serviceService.toggleStatus,
-    deleteServicio: serviceService.delete
+    deleteServicio: serviceService.delete,
+
+    getServicioHorarios: serviceScheduleService.list,
+    createServicioHorario: serviceScheduleService.create,
+    updateServicioHorario: serviceScheduleService.update,
+    toggleStatusServicioHorario: serviceScheduleService.toggleStatus,
+    deleteServicioHorario: serviceScheduleService.delete,
+
+
+    getPoliticas: policyService.list,
+    createPolitica: policyService.create,
+    updatePolitica: policyService.update,
+    toggleStatusPolitica: policyService.toggleStatus,
+    deletePolitica: policyService.delete,
 
     // --- UBIGEO (Pendiente) ---
     /*
