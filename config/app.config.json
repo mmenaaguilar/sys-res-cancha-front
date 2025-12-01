@@ -7,5 +7,5 @@
     "apiUrl": "https://sys-res-cancha-back.onrender.com",
     "debugMode": false
   },
-  "default": "development"
+  "default": "production"
 }
