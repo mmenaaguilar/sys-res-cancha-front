@@ -56,12 +56,12 @@ export const scheduleService = {
     
     deleteSpecial: async (id) => http.request(`/api/horario-especial/${id}`, 'DELETE'),
 
-    // --- CLONAR (Utilidad potente) ---
+    // --- CLONAR (Utilidad potente) --
     cloneDay: async (canchaId, fromDay, toDay) => {
         return await http.request('/api/horario-base/clone', 'POST', {
             cancha_id: parseInt(canchaId),
-            dia_origen: fromDay,
-            dia_destino: toDay
+            from_dia: fromDay,  
+            to_dia: toDay
         });
     }
 };

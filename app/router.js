@@ -10,10 +10,14 @@ import searchResultsView from "./views/searchResultsView.js";
 import adminSchedulesView from "./views/adminSchedulesView.js";
 import adminContactsView from "./views/adminContactsView.js";
 import adminServicesView from "./views/adminServicesView.js";
-
-
-// ✅ IMPORTACIÓN DE LA NUEVA VISTA DE CANCHAS
+import adminComplejoFormView from "./views/adminComplejoFormView.js"; 
 import adminCanchasView from "./views/adminCanchasView.js";
+import adminServicioHorariosView from "./views/adminServicioHorariosView.js";
+import adminPoliciesView from "./views/adminPoliciesView.js";
+import adminReservasView from "./views/adminReservasView.js";
+import adminManagersView from "./views/adminManagersView.js";
+
+
 
 const routes = [
   { path: "/", view: homeView },
@@ -37,7 +41,14 @@ const routes = [
   { path: "/terms", view: homeView },
 
   { path: "/admin/contactos", view: adminContactsView },
-  { path: "/admin/services", view: adminServicesView },
+  { path: "/admin/servicios", view: adminServicesView },
+  { path: "/admin/complejos/editar/:id", view: adminComplejoFormView },
+  { path: "/admin/servicios/:id/horarios", view: adminServicioHorariosView },
+  { path: "/admin/politicas", view: adminPoliciesView },
+  { path: "/admin/reservas", view: adminReservasView },
+  { path: "/admin/gestores", view: adminManagersView }
+
+
 ];
 
 let currentView = null;

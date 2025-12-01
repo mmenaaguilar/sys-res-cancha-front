@@ -1,128 +1,136 @@
 import http from "./httpClient.js";
 import { authService } from "./auth.service.js";
-// import { ubigeoService } from "./ubigeo.service.js"; // Ya no es estrictamente necesario aquí
 
 export const complexService = {
     
     search: async (filters) => {
-        const payload = { 
-            distrito: filters.location || '', 
-            fecha: filters.date, 
-            hora: filters.time, 
-            tipo_deporte_id: filters.sport 
-        };
+        const payload = { distrito: filters.location || '', fecha: filters.date, hora: filters.time, tipo_deporte_id: filters.sport };
         return await http.request('/api/alquiler/buscar-complejos-disponibles', 'POST', payload);
     },
 
     getSports: async () => {
-        try {
-            const res = await http.request('/api/tipo-deporte/combo');
-            return Array.isArray(res) ? res : (res.data || []);
-        } catch(e) { return []; }
+        try { return await http.request('/api/tipo-deporte/combo') || []; } catch(e) { return []; }
     },
 
     getMyComplejos: async () => {
-        const user = authService.getUser();
+        const user = authService.getUser(); 
         if (!user) return [];
         const uid = Number(user.usuario_id || user.id);
 
         try {
-            const res = await http.request('/api/complejos/list', 'POST', { 
-                usuario_id: uid, 
-                limit: 100, 
-                page: 1 
-            });
+            const res = await http.request('/api/complejos/list', 'POST', { usuario_id: uid, limit: 100, page: 1 });
             
             let data = [];
             if (Array.isArray(res)) data = res;
             else if (res.data && Array.isArray(res.data)) data = res.data;
+            else if (res.data && Array.isArray(res.data.data)) data = res.data.data;
 
-            return data.map(c => {
-                // Preferimos la ubicación compuesta del backend
-                let label = c.ubicacion_completa;
-                
-                // Si viene vacía, intentamos armarla o mostrar el ID
-                if (!label || label.trim() === ',') {
-                    label = c.distrito_nombre || (c.distrito_id ? `Zona ${c.distrito_id}` : 'Sin ubicación');
-                }
+            const listaProcesada = data.map(c => {
+                let label = '';
+                if (c.distrito_nombre) label = c.distrito_nombre + (c.provincia_nombre ? `, ${c.provincia_nombre}` : '');
+                else if (c.distrito_id) label = `ID: ${c.distrito_id}`;
+                else label = '--';
 
                 return {
                     complejo_id: c.complejo_id,
                     nombre: c.nombre,
                     direccion: c.direccion_detalle || c.direccion || 'Sin dirección',
-                    
+                    descripcion: c.descripcion, 
+                    url_map: c.url_map,   
+                    url_imagen: c.url_imagen, 
                     distrito_id: c.distrito_id, 
                     provincia_id: c.provincia_id,
                     departamento_id: c.departamento_id,
-
-                    ubicacion_label: label, // Etiqueta lista para la tabla
+                    ubicacion_label: label, 
+                    estado: c.estado || 'activo',
                     
-                    url_imagen: c.url_imagen,
-                    estado: c.estado || 'activo'
+                    // ✅ CORRECCIÓN CRÍTICA: Guardar el rol que viene del backend
+                    mi_rol: c.mi_rol 
                 };
             });
 
+            // Actualizamos la caché de roles para el Sidebar
+            const rolesCache = listaProcesada.map(c => ({ id: c.complejo_id, rol: c.mi_rol }));
+            localStorage.setItem('user_complex_roles', JSON.stringify(rolesCache));
+
+            return listaProcesada;
+
         } catch (e) {
-            console.error("Error:", e);
+            console.error("Error al listar complejos:", e);
             return [];
         }
     },
 
+    getRoleForComplex: (complejoId) => {
+        if (!complejoId) return null;
+        try {
+            const cache = JSON.parse(localStorage.getItem('user_complex_roles') || '[]');
+            const found = cache.find(x => x.id == complejoId);
+            return found ? parseInt(found.rol) : null;
+        } catch (e) { return null; }
+    },
+
+    isOwnerOf: (complejoId) => {
+        const role = complexService.getRoleForComplex(complejoId);
+        return role === 1;
+    },
+    
     create: async (data) => {
         const user = authService.getUser();
         const uid = Number(user.usuario_id || user.id);
-        if (!uid) throw new Error("Usuario no identificado");
-
-        const cleanInt = (val) => (val === null || val === "" || isNaN(parseInt(val))) ? null : parseInt(val);
-
-        const payload = {
-            nombre: data.nombre,
-            direccion_detalle: data.direccion_detalle || '',
-            distrito_id: cleanInt(data.distrito_id),
-            departamento_id: cleanInt(data.departamento_id),
-            provincia_id: cleanInt(data.provincia_id),
-            url_imagen: data.url_imagen || '',
-            descripcion: data.descripcion || '',
-            estado: 'activo',
-            usuario_id: uid 
-        };
+        
+        const formData = new FormData();
+        formData.append('nombre', data.nombre);
+        formData.append('direccion_detalle', data.direccion_detalle || '');
+        formData.append('descripcion', data.descripcion || '');
+        formData.append('estado', 'activo');
+        formData.append('usuario_id', uid);
+        
+        if(data.departamento_id) formData.append('departamento_id', data.departamento_id);
+        if(data.provincia_id) formData.append('provincia_id', data.provincia_id);
+        if(data.distrito_id) formData.append('distrito_id', data.distrito_id);
+        if (data.file) formData.append('imagen', data.file);
+        if (data.url_map) formData.append('url_map', data.url_map);
 
         try {
-            const res = await http.request('/api/complejos', 'POST', payload);
-            const newId = res.complejo_id || (res.data && res.data.complejo_id) || res.id;
-
-            if (!newId) throw new Error("Servidor respondió OK pero sin ID.");
-
-            await http.request('/api/usuario-roles', 'POST', { 
-                usuario_id: uid, 
-                rol_id: 1, 
-                complejo_id: newId, 
-                estado: 'activo' 
-            });
-
+            const res = await http.request('/api/complejos', 'POST', formData);
+            const newId = res.complejo_id || res.data?.complejo_id || res.id;
+            
+            // Asignar rol de dueño inmediatamente
+            if (newId) {
+                await http.request('/api/usuario-roles', 'POST', { usuario_id: uid, rol_id: 1, complejo_id: newId, estado: 'activo' });
+                
+                // ✅ TRUCO: Actualizar caché manualmente para que el sidebar reaccione rápido
+                try {
+                    let cache = JSON.parse(localStorage.getItem('user_complex_roles') || '[]');
+                    cache.push({ id: newId, rol: 1 });
+                    localStorage.setItem('user_complex_roles', JSON.stringify(cache));
+                } catch(e){}
+            }
             return res;
-        } catch (error) {
-            console.error("Error create:", error);
-            throw error; 
-        }
+        } catch (error) { throw error; }
     },
 
     update: async (id, data) => {
-        const cleanInt = (val) => (val === null || val === "" || isNaN(parseInt(val))) ? null : parseInt(val);
-        const payload = { 
-            ...data, 
-            distrito_id: cleanInt(data.distrito_id),
-            departamento_id: cleanInt(data.departamento_id),
-            provincia_id: cleanInt(data.provincia_id)
-        };
-        return await http.request(`/api/complejos/${id}`, 'PUT', payload);
+        const formData = new FormData();
+        formData.append('nombre', data.nombre);
+        formData.append('direccion_detalle', data.direccion_detalle || '');
+        formData.append('descripcion', data.descripcion || '');
+        formData.append('estado', data.estado);
+        formData.append('_method', 'PUT');
+
+        if(data.departamento_id) formData.append('departamento_id', data.departamento_id);
+        if(data.provincia_id) formData.append('provincia_id', data.provincia_id);
+        if(data.distrito_id) formData.append('distrito_id', data.distrito_id);
+
+        if (data.file) formData.append('imagen', data.file);
+        else if (data.url_imagen) formData.append('url_imagen', data.url_imagen);
+        
+        formData.append('url_map', data.url_map || '');
+
+        return await http.request(`/api/complejos/${id}`, 'POST', formData);
     },
 
-    toggleStatus: async (id) => {
-        return await http.request(`/api/complejos/status/${id}`, 'PUT');
-    },
-
-    delete: async (id) => {
-        return await http.request(`/api/complejos/${id}`, 'DELETE');
-    }
+    toggleStatus: async (id) => http.request(`/api/complejos/status/${id}`, 'PUT'),
+    delete: async (id) => http.request(`/api/complejos/${id}`, 'DELETE')
 };

@@ -137,3 +137,405 @@
     border-color: var(--accent);
     background-color: rgba(255, 255, 255, 0.08);
 }
+
+/* =========================================
+   ESTILOS GLOBALES PANEL ADMIN (Switches & Botones)
+   ========================================= */
+
+/* --- SWITCH (La Barrita) --- */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #475569; /* Gris oscuro */
+    transition: .3s;
+    border-radius: 20px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #10b981; /* Verde éxito */
+}
+
+input:checked + .slider:before {
+    transform: translateX(16px);
+}
+
+/* Texto Activo/Inactivo */
+.status-text {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-text.active {
+    color: #10b981;
+}
+
+/* --- BOTONES DE ACCIÓN (Iconos) --- */
+.item-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.05);
+    color: #cbd5e1;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-edit {
+    background: rgba(251, 191, 36, 0.15) !important;
+    color: #fbbf24 !important; /* Amarillo */
+}
+
+.btn-edit:hover {
+    background: rgba(251, 191, 36, 0.3) !important;
+}
+
+.btn-delete {
+    background: rgba(239, 68, 68, 0.15) !important;
+    color: #ef4444 !important; /* Rojo */
+}
+
+.btn-delete:hover {
+    background: rgba(239, 68, 68, 0.3) !important;
+}
+
+/* --- BADGES (Etiquetas) --- */
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+}
+
+/* ... tus estilos anteriores ... */
+
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000; /* Por encima de todo, incluidos modales */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none; /* Para hacer clic a través del contenedor vacío */
+}
+
+.toast {
+    min-width: 300px;
+    max-width: 400px;
+    background: #1e293b; /* Fondo oscuro igual a tus tarjetas */
+    color: #f8fafc;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border-left: 4px solid transparent;
+    opacity: 0;
+    transform: translateX(100%);
+    animation: toastSlideIn 0.3s forwards;
+    pointer-events: auto;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Animación de salida */
+.toast.hiding {
+    animation: toastSlideOut 0.3s forwards;
+}
+
+/* Tipos de Notificación */
+.toast.success { border-left-color: #10b981; }
+.toast.success .toast-icon { color: #10b981; }
+
+.toast.error { border-left-color: #ef4444; }
+.toast.error .toast-icon { color: #ef4444; }
+
+.toast.info { border-left-color: #3b82f6; }
+.toast.info .toast-icon { color: #3b82f6; }
+
+.toast-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+}
+
+.toast-content {
+    flex: 1;
+}
+
+.toast-title {
+    display: block;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+}
+
+.toast-message {
+    display: block;
+    font-size: 0.85rem;
+    color: #94a3b8;
+    line-height: 1.4;
+}
+
+@keyframes toastSlideIn {
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes toastSlideOut {
+    to { opacity: 0; transform: translateX(100%); }
+}
+
+/* ... Estilos anteriores ... */
+
+/* =========================================
+   MODAL DE CONFIRMACIÓN PERSONALIZADO
+   ========================================= */
+.confirm-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Fondo oscuro semi-transparente */
+    backdrop-filter: blur(4px);
+    z-index: 11000; /* Por encima de todo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.confirm-box {
+    background: #1e293b;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    transform: scale(0.95);
+    animation: popIn 0.2s forwards;
+}
+
+.confirm-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.confirm-title {
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.confirm-message {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.confirm-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.btn-confirm-cancel {
+    background: transparent;
+    border: 1px solid #475569;
+    color: #cbd5e1;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+.btn-confirm-cancel:hover { background: rgba(255,255,255,0.05); color: white; }
+
+.btn-confirm-yes {
+    background: #ef4444;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+.btn-confirm-yes:hover { background: #dc2626; transform: translateY(-1px); }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn { from { transform: scale(0.9); } to { transform: scale(1); } }
+
+/* ESTILO MENU PROFESIONAL */
+.select-pro {
+    appearance: none; /* Quita el estilo feo del sistema operativo */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    
+    background-color: #1e293b; /* Fondo oscuro (Slate 800) */
+    color: #e2e8f0;            /* Texto claro */
+    
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 8px 35px 8px 12px; /* Espacio extra a la derecha para la flecha */
+    font-size: 0.9rem;
+    font-family: inherit;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+    width: 100%;
+    
+    /* Flecha personalizada (SVG encoded) */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+}
+
+.select-pro:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    background-color: #334155;
+}
+
+.select-pro:focus {
+    border-color: #3b82f6; /* Borde azul al hacer clic */
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* IMPORTANTE: Fuerza el color oscuro en la lista desplegable */
+.select-pro option {
+    background-color: #1e293b;
+    color: white;
+    padding: 10px;
+}
+
+.admin-sidebar .nav-section {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #64748b;
+    margin: 24px 16px 12px;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.admin-sidebar .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    color: #cbd5e1;
+    text-decoration: none;
+    border-radius: 8px;
+    margin: 0 8px;
+    transition: all 0.2s ease;
+}
+
+.admin-sidebar .nav-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+
+.admin-sidebar .nav-item.active {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+    font-weight: 600;
+}
+
+.sidebar-header .user-info {
+    margin-top: 4px;
+}
+
+.sidebar-header .user-role {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.role-badge {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.sidebar-footer .btn-back {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #cbd5e1;
+    padding: 10px 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sidebar-footer .btn-back:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
