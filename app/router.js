@@ -16,6 +16,12 @@ import adminServicioHorariosView from "./views/adminServicioHorariosView.js";
 import adminPoliciesView from "./views/adminPoliciesView.js";
 import adminReservasView from "./views/adminReservasView.js";
 import adminManagersView from "./views/adminManagersView.js";
+import userProfileView from "./views/userProfileView.js";
+import complexDetailsView from "./views/complexDetailsView.js"; 
+import favoritesView from "./views/favoritesView.js";
+import bookingView from "./views/bookingView.js";
+
+
 
 
 
@@ -33,6 +39,7 @@ const routes = [
   { path: "/admin/canchas/:id/horarios", view: adminSchedulesView },
 
 
+
   // Rutas estáticas / Landing
   { path: "/software", view: homeView },
   { path: "/contact", view: homeView },
@@ -46,7 +53,13 @@ const routes = [
   { path: "/admin/servicios/:id/horarios", view: adminServicioHorariosView },
   { path: "/admin/politicas", view: adminPoliciesView },
   { path: "/admin/reservas", view: adminReservasView },
-  { path: "/admin/gestores", view: adminManagersView }
+  { path: "/admin/gestores", view: adminManagersView },
+  { path: "/profile", view: userProfileView },
+  { path: "/search", view: searchResultsView },
+  { path: "/complejo/:id", view: complexDetailsView },
+  { path: "/favorites", view: favoritesView },
+  { path: "/booking/:id", view: bookingView },
+
 
 
 ];
@@ -75,9 +88,29 @@ const matchRoute = (routePath, currentPath) => {
   return params;
 };
 
+const cleanupModals = () => {
+    // Eliminar overlays de modales
+    const overlays = document.querySelectorAll('.modal-overlay, .modal');
+    overlays.forEach(overlay => overlay.remove());
+    
+    // Eliminar cualquier otro elemento modal
+    const modals = document.querySelectorAll('[id*="Modal"], [class*="modal"]');
+    modals.forEach(modal => {
+        if (modal.style.display === 'flex' || modal.style.display === 'block') {
+            modal.remove();
+        }
+    });
+    
+    // Restaurar scroll si estaba bloqueado
+    document.body.style.overflow = '';
+};
+
 const handleLocation = async () => {
+  
   let path = window.location.pathname;
   if (path === "") path = "/";
+
+  cleanupModals()
 
   // LIMPIEZA
   if (currentView && typeof currentView.cleanup === "function") {
@@ -122,6 +155,8 @@ const navigate = (pathname) => {
   window.history.pushState({}, "", pathname);
   handleLocation();
 };
+
+
 
 window.onpopstate = handleLocation;
 // Exponer router globalmente para que los onclick="window.router.navigate(...)" funcionen

@@ -10,6 +10,8 @@ import { serviceScheduleService } from "./serviceSchedule.service.js";
 import { policyService } from "./policy.service.js";
 import { bookingService } from "./booking.service.js";
 import { managerService } from "./manager.service.js";
+import { userService } from "./user.service.js";
+import { favoriteService } from "./favorite.service.js";
 
 
 const api = {
@@ -84,41 +86,28 @@ const api = {
     getReservaDetalles: bookingService.getDetails,
     confirmarReserva: bookingService.confirmPayment,
     cancelarReserva: bookingService.cancel,
+    getBookingAvailability: bookingService.getAvailability,
+    getCanchaInfo: bookingService.getCanchaInfo,
+
 
     getGestores: managerService.list,
     inviteGestor: managerService.invite,
     deleteGestor: managerService.delete,
-    isOwnerOf: managerService.isOwnerOf, // <-- EXPONER ESTA FUNCIÓN
+    isOwnerOf: managerService.isOwnerOf, 
     getUser: managerService.getUser,
 
-    // --- UBIGEO (Pendiente) ---
-    /*
-    getDepartamentos: ubigeoService.getDepartamentos,
-    getProvincias: ubigeoService.getProvincias,
-    getDistritos: ubigeoService.getDistritos,
-    getLocationName: ubigeoService.getLocationName,
-    */
+    getUserCredits: userService.getCreditos,
+    updateUserProfile: userService.updateProfile,
+    changeUserPassword: userService.cambiarContrasena,
 
-    // --- COMPLEJOS (Pendiente) ---
-    /*
-    searchComplejos: complexService.search,
-    getSports: complexService.getSports,
-    getMyComplejos: complexService.getMyComplejos,
-    createComplejo: complexService.create,
-    updateComplejo: complexService.update,
-    toggleComplejoStatus: complexService.toggleStatus,
-    deleteComplejo: complexService.delete,
-    */
+    getPublicDetails: complexService.getPublicDetails, 
+    getActiveLocations: complexService.getActiveLocations,
 
-    // --- CANCHAS (Pendiente) ---
-    /*
-    getCanchasPaginated: fieldService.list,
-    getCanchasByComplejo: fieldService.getByComplejo,
-    createCancha: fieldService.create,
-    updateCancha: fieldService.update,
-    toggleCanchaStatus: fieldService.toggleStatus,
-    deleteCancha: fieldService.delete
-    */
+    getMyFavorites: favoriteService.getUserFavoritesMap,
+    addFavorite: favoriteService.add,
+    removeFavorite: favoriteService.remove,
+    getFavoritesList: favoriteService.getList,
+
 };
 
 export default api;

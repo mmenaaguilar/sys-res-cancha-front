@@ -539,3 +539,61 @@ input:checked + .slider:before {
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(255, 255, 255, 0.2);
 }
+
+/* Variables (Asegúrate de tenerlas definidas o usa tus colores) */
+:root {
+    --sidebar-bg: #0f172a;
+    --primary-gradient-start: #6366f1; /* Color bonito para el avatar */
+    --primary-gradient-end: #3b82f6;
+}
+
+/* --- Header con Logo (Ajuste ligero para espacio) --- */
+.sidebar-header {
+    padding: 30px 20px 10px 20px; /* Un poco más de aire arriba */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sidebar-logo {
+    max-width: 130px;
+    height: auto;
+}
+
+/* --- ✅ NUEVA SECCIÓN DE USUARIO CENTRADA --- */
+.user-profile-centered {
+    display: flex;
+    flex-direction: column; /* ¡Importante! Apila los elementos verticalmente */
+    align-items: center;    /* Centra los elementos horizontalmente */
+    justify-content: center;
+    padding: 20px 16px 30px 16px; /* Buen espaciado alrededor */
+    margin-bottom: 10px;
+}
+
+/* Avatar más grande y llamativo */
+.user-avatar-large {
+    width: 60px;  /* Hacemos el círculo más grande para que destaque */
+    height: 60px;
+    /* Un gradiente moderno para el fondo del avatar */
+    background: linear-gradient(135deg, var(--primary-gradient-start, #6366f1), var(--primary-gradient-end, #3b82f6));
+    color: white;
+    border-radius: 50%; /* Lo hace perfectamente redondo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px; /* Letra más grande */
+    font-weight: 700;
+    margin-bottom: 12px; /* Espacio entre el círculo y el nombre */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Sombra suave para profundidad */
+    border: 2px solid rgba(255, 255, 255, 0.1); /* Un borde sutil */
+}
+
+/* Nombre del usuario centrado */
+.user-name-title {
+    margin: 0;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 18px; /* Un poco más grande que el texto normal */
+    letter-spacing: 0.5px;
+    text-align: center;
+}

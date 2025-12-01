@@ -1,0 +1,348 @@
+/* Layout General */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* Hero Section */
+.complex-hero {
+    height: 350px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    color: white;
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 3rem;
+}
+
+.hero-content {
+    width: 100%;
+    position: relative;
+}
+
+.btn-back-float {
+    position: absolute;
+    top: -100px; /* Sube hacia arriba */
+    left: 0;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+.btn-back-float:hover { background: rgba(255,255,255,0.3); }
+
+.badge-district {
+    background: #2563eb;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 0.5rem 0;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.hero-address {
+    font-size: 1.1rem;
+    color: #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Grid Principal */
+.main-layout {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 3rem;
+    margin-top: -3rem; /* Solapamiento visual */
+    position: relative;
+    z-index: 10;
+    padding-bottom: 4rem;
+}
+
+/* Sidebar Info */
+.info-box {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.info-box h3 { margin-bottom: 1rem; color: #1e293b; }
+.info-box p { color: #64748b; line-height: 1.6; margin-bottom: 1.5rem; }
+
+.btn-map-link {
+    display: block;
+    text-align: center;
+    background: #f1f5f9;
+    color: #475569;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+.btn-map-link:hover { background: #e2e8f0; color: #1e293b; }
+
+/* Lista de Canchas */
+.section-title {
+    margin-top: 3rem; /* Espacio para compensar el margin negativo */
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    color: #1e293b;
+    font-weight: 700;
+}
+@media (min-width: 768px) {
+    /* Si es desktop, el titulo puede estar alineado con el sidebar */
+    .section-title { margin-top: 0; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.5); margin-bottom: 1.5rem; }
+    /* Cuando se haga scroll y pase el hero, necesitaríamos JS para cambiar el color, 
+       pero por simplicidad dejémoslo que funcione bien visualmente al inicio */
+}
+
+.courts-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.court-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.court-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    border-color: #cbd5e1;
+}
+
+.court-icon-box {
+    width: 60px;
+    height: 60px;
+    background: #eff6ff;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+}
+
+.court-info { flex: 1; }
+.court-info h4 { margin: 0 0 0.25rem 0; color: #0f172a; font-size: 1.1rem; }
+
+.court-meta {
+    font-size: 0.9rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-book-court {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-book-court:hover { background: #1d4ed8; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .main-layout { grid-template-columns: 1fr; margin-top: 0; gap: 2rem; padding-top: 2rem; }
+    .section-title { color: #1e293b; text-shadow: none; margin-top: 0; }
+    .hero-title { font-size: 2rem; }
+    .court-card { flex-direction: column; align-items: flex-start; }
+    .btn-book-court { width: 100%; margin-top: 0.5rem; }
+}
+
+/* Skeleton */
+.skeleton-hero { height: 300px; background: #e2e8f0; animation: pulse 1.5s infinite; }
+.skeleton-text { height: 20px; background: #e2e8f0; margin-bottom: 10px; border-radius: 4px; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+
+:root {
+    --sidebar-bg: #0f172a; /* Slate 900 - Color base oscuro */
+    --sidebar-text: #94a3b8; /* Slate 400 */
+    --sidebar-text-hover: #f1f5f9; /* Slate 100 */
+    --sidebar-active-bg: rgba(255, 255, 255, 0.05);
+    --primary-color: #3b82f6;
+}
+
+.admin-sidebar {
+    width: 260px;
+    height: 100vh;
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(255,255,255,0.05);
+    font-family: 'Inter', system-ui, sans-serif; /* Importante una fuente limpia */
+}
+
+/* --- Header & Logo --- */
+.sidebar-header {
+    padding: 24px 24px 10px 24px;
+    display: flex;
+    justify-content: center;
+}
+
+.sidebar-logo {
+    max-width: 140px; /* Ajusta según tu logo */
+    height: auto;
+}
+
+/* --- User Profile Card (Nuevo) --- */
+.user-profile-section {
+    padding: 0 16px 20px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 16px;
+}
+
+.user-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--primary-color), #2563eb);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.user-info-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.user-name {
+    color: #fff;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.role-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: inline-block;
+    align-self: flex-start; /* Alinea el badge a la izquierda */
+    letter-spacing: 0.5px;
+}
+
+/* --- Navigation --- */
+.sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 16px;
+}
+
+.nav-group {
+    margin-bottom: 24px;
+}
+
+.nav-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #475569; /* Slate 600 */
+    font-weight: 700;
+    margin-bottom: 8px;
+    padding-left: 12px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    color: var(--sidebar-text);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--sidebar-text-hover);
+}
+
+.nav-item.active {
+    background: var(--sidebar-active-bg);
+    color: #fff;
+    border-left: 3px solid var(--primary-color); /* Indicador visual sutil */
+    border-radius: 4px 8px 8px 4px; /* Borde izquierdo recto */
+}
+
+/* --- Footer --- */
+.sidebar-footer {
+    padding: 16px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.btn-back {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--sidebar-text);
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 13px;
+}
+
+.btn-back:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.2);
+    color: #fff;
+}

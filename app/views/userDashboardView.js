@@ -1,6 +1,8 @@
+// app/views/userDashboardView.js
 import { navigate } from "../router.js";
 import api from "../services/api.js";
 import { toast } from "../utils/toast.js";
+import { UserTopNav } from "../components/UserTopNav.js";
 
 // --- ICONOS DE GESTIÓN (SVG) ---
 const ICONS = {
@@ -33,20 +35,17 @@ const userDashboardView = {
         <style>
             :root { --glass-bg: rgba(15, 23, 42, 0.6); --glass-border: rgba(255, 255, 255, 0.1); }
             
-            /* Header Pro (Reutilizado) */
-            .header-pro { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(12px); border-bottom: 1px solid var(--glass-border); padding: 15px 0; position: sticky; top: 0; z-index: 100; }
-            
             /* Hero Carrusel (Fondo) */
-            .hero-dashboard { position: relative; height: 60vh; width: 100%; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 80px; }
+            .hero-dashboard { position: relative; height: 50vh; width: 100%; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 40px; }
             .hero-background { position: absolute; inset: 0; z-index: 0; }
             .hero-overlay-dash { position: absolute; inset: 0; background: linear-gradient(to top, #0f172a 10%, rgba(15,23,42,0.6) 50%, rgba(15,23,42,0.4) 100%); z-index: 1; }
             
             /* Dashboard Content */
-            .dash-content { position: relative; z-index: 10; width: 100%; max-width: 1000px; padding: 0 20px; margin-top: -120px; }
+            .dash-content { position: relative; z-index: 10; width: 100%; max-width: 1000px; padding: 0 20px; margin-top: 20px; }
             
-            .greeting-box { margin-bottom: 30px; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-            .greeting-title { font-size: 2.5rem; font-weight: 800; color: white; margin: 0; }
-            .greeting-sub { color: #cbd5e1; font-size: 1.1rem; }
+            .greeting-box { margin-bottom: 30px; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+            .greeting-title { font-size: 2rem; font-weight: 800; color: white; margin: 0; }
+            .greeting-sub { color: #cbd5e1; font-size: 1rem; }
 
             /* Grid de Acciones */
             .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; }
@@ -54,16 +53,16 @@ const userDashboardView = {
             .action-card { 
                 background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); 
                 border-radius: 16px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s ease;
-                display: flex; flex-direction: column; align-items: center; justify-content: center; height: 160px;
-                box-shadow: 0 10px 20px -5px rgba(0,0,0,0.3);
+                display: flex; flex-direction: column; align-items: center; justify-content: center; height: 140px;
+                box-shadow: 0 6px 12px -3px rgba(0,0,0,0.3);
             }
-            .action-card:hover { transform: translateY(-5px); background: rgba(30, 41, 59, 0.9); border-color: rgba(255,255,255,0.2); box-shadow: 0 20px 30px -10px rgba(0,0,0,0.5); }
+            .action-card:hover { transform: translateY(-3px); background: rgba(30, 41, 59, 0.9); border-color: rgba(255,255,255,0.2); box-shadow: 0 12px 20px -6px rgba(0,0,0,0.5); }
             
-            .icon-circle { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; color: white; transition: transform 0.3s; }
+            .icon-circle { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; color: white; transition: transform 0.3s; }
             .action-card:hover .icon-circle { transform: scale(1.1); }
             
-            .card-title { color: white; font-weight: 600; font-size: 1rem; margin-bottom: 4px; }
-            .card-desc { color: #94a3b8; font-size: 0.75rem; }
+            .card-title { color: white; font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
+            .card-desc { color: #94a3b8; font-size: 0.7rem; }
 
             /* Colores Específicos */
             .icon-search { background: linear-gradient(135deg, #3b82f6, #2563eb); }
@@ -73,8 +72,10 @@ const userDashboardView = {
             .icon-user { background: linear-gradient(135deg, #64748b, #475569); }
 
             @media(max-width: 768px) {
-                .greeting-title { font-size: 1.8rem; }
+                .hero-dashboard { height: 40vh; padding-bottom: 30px; }
+                .greeting-title { font-size: 1.6rem; }
                 .action-grid { grid-template-columns: 1fr 1fr; }
+                .action-card { height: 130px; }
             }
         </style>
     `;
@@ -83,33 +84,10 @@ const userDashboardView = {
       ${styles}
       <div class="container-fluid" style="background: #0f172a; min-height: 100vh;">
         
-        <!-- HEADER (Idéntico a Home) -->
-        <header class="header-pro">
-          <div class="container" style="display:flex; justify-content:space-between; align-items:center;">
-            <div class="logo" style="display:flex; align-items:center; gap:12px;">
-              <div style="width:35px; height:35px; background:linear-gradient(45deg, #3b82f6, #6366f1); border-radius:8px; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold;">R</div>
-              <div><strong style="color:white; font-size:1.2rem; letter-spacing:-0.5px;">ReserSport</strong></div>
-            </div>
-            
-            <nav style="display:flex; align-items:center; gap:20px;">
-              <div id="homeUserMenuBtn" style="cursor:pointer; display:flex; align-items:center; gap:10px; padding:5px 10px; background:rgba(255,255,255,0.05); border-radius:30px; border:1px solid rgba(255,255,255,0.1);">
-                  <span style="color:white; font-size:0.9rem; margin-left:5px;">${user.nombre.split(' ')[0]}</span>
-                  <div style="width:30px; height:30px; background:#3b82f6; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; color:white;">${initial}</div>
-              </div>
-            </nav>
-          </div>
-        </header>
-
-        <!-- DROPDOWN -->
-        <div id="homeUserDropdown" class="card" style="position:fixed; top:75px; right:20px; width:220px; display:none; z-index:110; padding:5px; background:#1e293b; border:1px solid rgba(255,255,255,0.1);">
-            <div style="padding:15px; border-bottom:1px solid rgba(255,255,255,0.05);">
-                <div style="color:white; font-weight:bold;">${user.nombre}</div>
-                <div style="color:#64748b; font-size:0.8rem;">${user.correo}</div>
-            </div>
-            <a href="#" id="doLogout" style="display:block; padding:12px; color:#f87171; text-decoration:none;">🚪 Cerrar Sesión</a>
-        </div>
-
-        <main>
+        <!-- TOP NAVIGATION -->
+        <div id="userTopNav"></div>
+        
+        <main class="main-content">
             <!-- CARRUSEL DE FONDO (Igual que Home) -->
             <section class="hero-dashboard">
                 <div class="hero-background">
@@ -153,7 +131,7 @@ const userDashboardView = {
                     </div>
 
                     <!-- 4. Favoritos -->
-                    <div class="action-card">
+                    <div class="action-card" id="btnDashFavorites"> <!-- AGREGAR ID AQUÍ -->
                         <div class="icon-circle icon-star">${ICONS.star}</div>
                         <div class="card-title">Favoritos</div>
                         <div class="card-desc">Canchas guardadas</div>
@@ -199,7 +177,6 @@ const userDashboardView = {
                 </div>
             </div>
         </div>
-
       </div>
     `;
   },
@@ -212,37 +189,22 @@ const userDashboardView = {
         }
     } catch (e) {}
 
-    // 2. Dropdown & Logout
-    const menuBtn = document.getElementById('homeUserMenuBtn');
-    const dropdown = document.getElementById('homeUserDropdown');
-    
-    if (menuBtn) {
-        menuBtn.addEventListener('click', (e) => { e.stopPropagation(); dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block'; });
-        document.addEventListener('click', () => { if(dropdown) dropdown.style.display = 'none'; });
-        document.getElementById('doLogout')?.addEventListener('click', (e) => {
-            e.preventDefault();
-            toast.info("Hasta pronto...");
-            setTimeout(() => api.logout(), 800);
-        });
-    }
-
-    // 3. Botones Dashboard
+    // 2. Botones Dashboard
     document.getElementById('btnDashSearch')?.addEventListener('click', () => {
-        // Redirige al home pero con el foco en el buscador (o una vista de búsqueda dedicada)
-        navigate('/'); 
-        setTimeout(() => { 
-            const input = document.getElementById('location'); 
-            if(input) input.focus(); 
-        }, 500);
+        navigate('/search'); 
     });
     
     document.getElementById('btnDashReservations')?.addEventListener('click', () => navigate('/reservations'));
     
     document.getElementById('btnDashProfile')?.addEventListener('click', () => {
-        toast.info("Próximamente: Edición de perfil");
+        navigate('/profile');
     });
 
-    // 4. Lógica Admin / Partner
+    document.getElementById('btnDashFavorites')?.addEventListener('click', () => {
+    navigate('/favorites');
+    });
+
+    // 3. Lógica Admin / Partner
     const btnAdmin = document.getElementById('btnDashAdmin');
     const modalPartner = document.getElementById('partnerModal');
     
@@ -256,7 +218,7 @@ const userDashboardView = {
         });
     }
 
-    // 5. Modal Partner
+    // 4. Modal Partner
     const closeModal = () => modalPartner.style.display = 'none';
     document.getElementById('partnerClose')?.addEventListener('click', closeModal);
     document.getElementById('partnerOverlay')?.addEventListener('click', closeModal);
@@ -276,6 +238,14 @@ const userDashboardView = {
             btn.textContent = originalText; btn.disabled = false;
         }
     });
+
+    // 5. Top Navigation
+    const navContainer = document.getElementById('userTopNav');
+    if (navContainer) {
+        const user = api.getUser();
+        navContainer.innerHTML = UserTopNav.render('dashboard', user);
+        UserTopNav.attachListeners();
+    }
   }
 };
 
