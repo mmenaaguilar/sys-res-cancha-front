@@ -9,6 +9,31 @@ if (!document.getElementById('leaflet-css')) {
     const script = document.createElement('script'); script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'; document.head.appendChild(script);
 }
 
+// ✅ Función definitiva - usa window.location.origin para URL completa
+function getAbsoluteImageUrl(relativePath) {
+    if (!relativePath) return null;
+    
+    if (relativePath.startsWith('http://') || relativePath.startsWith('https://')) {
+        return relativePath;
+    }
+    
+    let cleanPath = relativePath;
+    
+    // Eliminar 'public/' del inicio
+    if (cleanPath.startsWith('public/')) {
+        cleanPath = cleanPath.substring(7);
+    } else if (cleanPath.startsWith('public\\')) {
+        cleanPath = cleanPath.substring(7);
+    }
+    
+    cleanPath = cleanPath.replace(/\\/g, '/');
+    cleanPath = cleanPath.replace(/^\//, '');
+    
+    // ✅ Forzar el puerto 8000 para desarrollo
+    const baseUrl = 'http://localhost:8000'; // <-- ¡Aquí está la clave!
+    return baseUrl + '/' + cleanPath;
+}
+
 let state = {
     complejo: null,
     isSubmitting: false,
@@ -34,7 +59,6 @@ const adminComplejoFormView = {
     if (!api.isLoggedIn()) { navigate("/"); return ""; }
     const user = api.getUser();
     
-    // 1. Obtener Datos
     const complexes = await api.getMyComplejos();
     const id = params.id || window.location.pathname.split('/').pop();
     
@@ -49,50 +73,20 @@ const adminComplejoFormView = {
     state.currentEditId = id;
     state.originalImageUrl = c.url_imagen;
 
-    // --- LÓGICA DE IMAGEN INTELEGENTE ---
-    // Usamos la URL cruda de la BD. El evento 'onerror' en el HTML hará la magia si falla.
-    // Limpiamos barras invertidas de Windows por si acaso.
-    const rawImgUrl = c.url_imagen ? c.url_imagen.replace(/\\/g, '/') : null;
+    const displayImageUrl = c.url_imagen ? getAbsoluteImageUrl(c.url_imagen) : null;
 
-    // Script para manejar los reintentos de carga de imagen
-    const imageErrorHandler = `
-        (function(img){
-            // Contador de reintentos en el elemento
-            let retries = parseInt(img.getAttribute('data-retries') || 0);
-            const originalSrc = img.getAttribute('data-src');
-            
-            if(retries === 0) {
-                // Intento 1: Probar con barra inicial (root relative)
-                if(!originalSrc.startsWith('/')) img.src = '/' + originalSrc;
-            } 
-            else if(retries === 1) {
-                // Intento 2: Probar quitando 'public/' (si el server root es public)
-                let clean = originalSrc.replace(/^public\\//, '').replace(/^\\//, '');
-                img.src = '/' + clean;
-            }
-            else if(retries === 2) {
-                 // Intento 3: Probar ruta relativa subiendo niveles (para subcarpetas)
-                 img.src = '../../../../' + originalSrc;
-            }
-            else {
-                // Rendirse: Mostrar icono de error
-                img.style.display='none'; 
-                img.nextElementSibling.style.display='flex';
-                return;
-            }
-            img.setAttribute('data-retries', retries + 1);
-        })(this);
-    `;
+    // Agregar depuración temporal
+    if (displayImageUrl) {
+        console.log('🔍 URL de imagen generada:', displayImageUrl);
+    }
 
-    const imagePreviewHtml = rawImgUrl 
-        ? `<img src="${rawImgUrl}" 
-               data-src="${rawImgUrl}"
-               data-retries="0"
-               style="width:100%; height:100%; object-fit:cover; border-radius:10px;" 
-               onerror="${imageErrorHandler.replace(/\n/g, '')}">
+    const imagePreviewHtml = displayImageUrl
+        ? `<img src="${displayImageUrl}" 
+               style="width:100%; height:100%; object-fit:cover; border-radius:10px;"
+               onerror="console.error('❌ Error al cargar imagen:', this.src); this.style.display='none'; this.nextElementSibling.style.display='flex';">
            <div style="display:none; text-align:center; color:#ef4444; height:100%; flex-direction:column; justify-content:center;">
                <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24" style="margin:0 auto;"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-               <span style="font-size:0.8rem; margin-top:5px;">No se encuentra la imagen<br><span style="font-size:0.7rem; opacity:0.7">${rawImgUrl}</span></span>
+               <span style="font-size:0.8rem; margin-top:5px;">No se puede cargar la imagen</span>
            </div>`
         : `<div style="text-align:center; color:var(--text-muted);">
              <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24" style="margin:0 auto; display:block; opacity:0.5;"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -152,7 +146,6 @@ const adminComplejoFormView = {
                         <hr class="separator">
 
                         <div class="grid-2-col-layout">
-                            <!-- MAPA -->
                             <div class="field map-section">
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                                     <label style="margin:0;">📍 Ubicación en Mapa</label>
@@ -165,7 +158,6 @@ const adminComplejoFormView = {
                                 </div>
                             </div>
 
-                            <!-- IMAGEN -->
                             <div class="field image-section">
                                 <label>📷 Imagen de Portada</label>
                                 <div class="image-preview-wrapper" onclick="document.getElementById('cFile').click()">
@@ -233,7 +225,6 @@ const adminComplejoFormView = {
     AdminSidebar.attachListeners();
     const c = state.complejo; 
 
-    // 1. Cargar Ubigeo y Rellenar
     await loadDepartamentos();
     if(c.departamento_id) {
         document.getElementById('cDep').value = c.departamento_id;
@@ -243,7 +234,6 @@ const adminComplejoFormView = {
         document.getElementById('cDist').value = c.distrito_id;
     }
 
-    // 2. Mapa Leaflet (Ubicación Guardada)
     setTimeout(() => {
         let startLat = -12.0463; 
         let startLng = -77.0428; 
@@ -283,7 +273,6 @@ const adminComplejoFormView = {
         state.mapInstance.invalidateSize();
     }, 500);
 
-    // 3. Listeners Selects
     document.getElementById('cDep').addEventListener('change', async (e) => {
          if(e.target.value) await updateProvincias(e.target.value); else { document.getElementById('cProv').innerHTML=''; document.getElementById('cDist').innerHTML=''; }
     });
@@ -291,7 +280,6 @@ const adminComplejoFormView = {
          if(e.target.value) await updateDistritos(e.target.value); else document.getElementById('cDist').innerHTML='';
     });
 
-    // 4. Preview al seleccionar archivo nuevo
     document.getElementById('cFile').addEventListener('change', (e) => {
         const file = e.target.files[0];
         const imgBox = document.getElementById('imgPreviewBox');
@@ -302,7 +290,6 @@ const adminComplejoFormView = {
         }
     });
 
-    // 5. Submit Update
     document.getElementById('formComplejo').addEventListener('submit', async (e) => {
         e.preventDefault();
         if (state.isSubmitting) return; 
@@ -323,7 +310,6 @@ const adminComplejoFormView = {
             distrito_id: document.getElementById('cDist').value || c.distrito_id,
             
             file: file || null,
-            // Enviamos la URL original si no hay archivo, para que el backend la mantenga.
             url_imagen: !file ? state.originalImageUrl : null, 
             url_map: document.getElementById('cMapUrlFinal').value || c.url_map
         };

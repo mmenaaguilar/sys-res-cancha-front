@@ -14,6 +14,8 @@ import adminComplejoFormView from "./views/adminComplejoFormView.js";
 import adminCanchasView from "./views/adminCanchasView.js";
 import adminServicioHorariosView from "./views/adminServicioHorariosView.js";
 import adminPoliciesView from "./views/adminPoliciesView.js";
+import adminReservasView from "./views/adminReservasView.js";
+import adminManagersView from "./views/adminManagersView.js";
 
 
 
@@ -42,7 +44,10 @@ const routes = [
   { path: "/admin/servicios", view: adminServicesView },
   { path: "/admin/complejos/editar/:id", view: adminComplejoFormView },
   { path: "/admin/servicios/:id/horarios", view: adminServicioHorariosView },
-  { path: "/admin/politicas", view: adminPoliciesView }
+  { path: "/admin/politicas", view: adminPoliciesView },
+  { path: "/admin/reservas", view: adminReservasView },
+  { path: "/admin/gestores", view: adminManagersView }
+
 
 ];
 

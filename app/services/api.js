@@ -8,6 +8,8 @@ import { contactService } from "./contact.service.js";
 import { serviceService } from "./service.service.js";
 import { serviceScheduleService } from "./serviceSchedule.service.js";
 import { policyService } from "./policy.service.js";
+import { bookingService } from "./booking.service.js";
+import { managerService } from "./manager.service.js";
 
 
 const api = {
@@ -72,12 +74,22 @@ const api = {
     toggleStatusServicioHorario: serviceScheduleService.toggleStatus,
     deleteServicioHorario: serviceScheduleService.delete,
 
-
     getPoliticas: policyService.list,
     createPolitica: policyService.create,
     updatePolitica: policyService.update,
     toggleStatusPolitica: policyService.toggleStatus,
     deletePolitica: policyService.delete,
+
+    getReservas: bookingService.list,
+    getReservaDetalles: bookingService.getDetails,
+    confirmarReserva: bookingService.confirmPayment,
+    cancelarReserva: bookingService.cancel,
+
+    getGestores: managerService.list,
+    inviteGestor: managerService.invite,
+    deleteGestor: managerService.delete,
+    isOwnerOf: managerService.isOwnerOf, // <-- EXPONER ESTA FUNCIÓN
+    getUser: managerService.getUser,
 
     // --- UBIGEO (Pendiente) ---
     /*
