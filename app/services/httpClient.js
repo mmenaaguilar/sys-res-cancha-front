@@ -1,12 +1,17 @@
 // app/services/httpClient.js
 import config from "../../config/app.config.json";
 
+<<<<<<< HEAD
 // Ajusta tu URL base si es diferente
 const API_BASE_URL = config[config.default].apiUrl; 
+=======
+const API_BASE_URL = "http://localhost:8000";
+>>>>>>> parent of 4ae944e (Merge branch 'dev1_changes')
 
 const httpClient = {
     async request(endpoint, method = 'GET', body = null) {
         const headers = {
+            "Content-Type": "application/json",
             "Accept": "application/json"
         };
 
@@ -16,16 +21,7 @@ const httpClient = {
         }
 
         const config = { method, headers };
-
-        // LOGICA INTELIGENTE: 
-        // Si el body es FormData (archivos), NO ponemos Content-Type (el navegador lo pone).
-        // Si es objeto normal, lo convertimos a JSON.
-        if (body instanceof FormData) {
-            config.body = body;
-        } else if (body) {
-            headers["Content-Type"] = "application/json";
-            config.body = JSON.stringify(body);
-        }
+        if (body) config.body = JSON.stringify(body);
 
         try {
             const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
@@ -36,21 +32,24 @@ const httpClient = {
                 return;
             }
 
-            // Manejo robusto de respuesta (Texto o JSON)
+            // 1. LEEMOS EL TEXTO CRUDO PRIMERO
             const text = await response.text();
+            
             let json;
             try {
+                // 2. INTENTAMOS CONVERTIR A JSON
                 json = JSON.parse(text);
             } catch (e) {
-                console.error("Respuesta del servidor no es JSON:", text);
-                // Si no es JSON, probablemente sea un error de PHP fatal o un var_dump olvidado
-                throw new Error("Error de comunicación con el servidor. Revisa la consola.");
+                // 3. SI FALLA, ES UN ERROR DE PHP (HTML/TEXTO)
+                console.error("🔥 CRITICAL ERROR SERVER:", text);
+                throw new Error(`Error del Servidor (No JSON): ${text.substring(0, 150)}...`);
             }
 
             if (!response.ok) {
                 throw new Error(json.error || json.message || `Error ${response.status}`);
             }
 
+            // 4. ESTRUCTURA DE RESPUESTA UNIFICADA
             if (json.data !== undefined) {
                 return json.data;
             }

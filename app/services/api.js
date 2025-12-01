@@ -5,11 +5,7 @@ import { ubigeoService } from "./ubigeo.service.js";
 import { fieldService } from "./field.service.js";
 import { scheduleService } from "./schedule.service.js";
 import { contactService } from "./contact.service.js";
-import { serviceService } from "./service.service.js";
-import { serviceScheduleService } from "./serviceSchedule.service.js";
-import { policyService } from "./policy.service.js";
-import { bookingService } from "./booking.service.js";
-import { managerService } from "./manager.service.js";
+import { serviceService } from "./service.service.js"; 
 
 
 const api = {
@@ -66,30 +62,7 @@ const api = {
     createServicio: serviceService.create,
     updateServicio: serviceService.update,
     toggleStatusServicio: serviceService.toggleStatus,
-    deleteServicio: serviceService.delete,
-
-    getServicioHorarios: serviceScheduleService.list,
-    createServicioHorario: serviceScheduleService.create,
-    updateServicioHorario: serviceScheduleService.update,
-    toggleStatusServicioHorario: serviceScheduleService.toggleStatus,
-    deleteServicioHorario: serviceScheduleService.delete,
-
-    getPoliticas: policyService.list,
-    createPolitica: policyService.create,
-    updatePolitica: policyService.update,
-    toggleStatusPolitica: policyService.toggleStatus,
-    deletePolitica: policyService.delete,
-
-    getReservas: bookingService.list,
-    getReservaDetalles: bookingService.getDetails,
-    confirmarReserva: bookingService.confirmPayment,
-    cancelarReserva: bookingService.cancel,
-
-    getGestores: managerService.list,
-    inviteGestor: managerService.invite,
-    deleteGestor: managerService.delete,
-    isOwnerOf: managerService.isOwnerOf, // <-- EXPONER ESTA FUNCIÓN
-    getUser: managerService.getUser,
+    deleteServicio: serviceService.delete
 
     // --- UBIGEO (Pendiente) ---
     /*
