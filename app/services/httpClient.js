@@ -1,7 +1,7 @@
 // app/services/httpClient.js
 
 // 1. URL base y objeto de configuración deben ser variables que se llenan de forma asíncrona
-let API_BASE_URL = "http://localhost:8000"; // Valor de fallback
+let API_BASE_URL = "http://localhost:8000"; // Valor de fallback inicial
 let CONFIG_DATA = null;
 
 // La función para cargar la configuración JSON
@@ -24,19 +24,18 @@ async function loadConfig() {
       window.location.hostname === "localhost" ||
       window.location.hostname === "127.0.0.1";
 
-    // Determinar la clave del entorno a usar
     let environmentKey;
 
     if (isLocalhost) {
+      // Si es local, siempre usamos development
       environmentKey = "development";
-    } else if (CONFIG_DATA && CONFIG_DATA["production"]) {
-      environmentKey = "production";
     } else if (CONFIG_DATA && CONFIG_DATA["default"]) {
-      // Si la detección de localhost/production falla, usamos la clave 'default'
+      // Si NO es local (ej. Render) o no se detectó claramente,
+      // usamos la clave definida en 'default' (que suele ser 'production' en el entorno real)
       environmentKey = CONFIG_DATA["default"];
     } else {
-      // Último recurso si el JSON no tiene 'production' ni 'default'
-      environmentKey = "development";
+      // Fallback final: si el JSON no tiene la clave 'default', asumimos 'production'
+      environmentKey = "production";
     }
 
     // Aplicar la URL base
