@@ -1,10 +1,10 @@
 {
   "development": {
-    "apiUrl": "http://localhost:8000/api",
+    "apiUrl": "http://localhost:8000",
     "debugMode": true
   },
   "production": {
-    "apiUrl": "https://api.tudominio.com/api",
+    "apiUrl": "https://sys-res-cancha-back.onrender.com",
     "debugMode": false
   },
   "default": "development"

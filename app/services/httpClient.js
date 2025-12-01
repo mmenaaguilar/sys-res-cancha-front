@@ -1,7 +1,8 @@
 // app/services/httpClient.js
+import config from "../../config/app.config.json";
 
 // Ajusta tu URL base si es diferente
-const API_BASE_URL = "http://localhost:8000"; 
+const API_BASE_URL = config[config.default].apiUrl; 
 
 const httpClient = {
     async request(endpoint, method = 'GET', body = null) {
