@@ -15,19 +15,22 @@ export const bookingService = {
     },
 
     // --- GESTIÓN USUARIO (Mis Reservas) ---
-    getMyReservations: async () => {
+ getMyReservations: async (page = 1, limit = 10) => {
         const user = authService.getUser();
-        if (!user) return [];
+        if (!user) return { data: [], total: 0 };
 
         try {
             const res = await http.request('/api/reserva/list', 'POST', { 
                 usuario_id: user.usuario_id || user.id,
-                limit: 20 
+                limit: limit, // ✅ Usamos el límite dinámico (10)
+                page: page
             });
-            return Array.isArray(res) ? res : (res.data || []);
+            // Aseguramos formato de respuesta
+            if (Array.isArray(res)) return { data: res, total: res.length };
+            return res;
         } catch (e) {
             console.error("Error obteniendo mis reservas:", e);
-            return [];
+            return { data: [], total: 0 };
         }
     },
 
