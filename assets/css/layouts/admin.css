@@ -597,3 +597,154 @@ input:checked + .slider:before {
     letter-spacing: 0.5px;
     text-align: center;
 }
+
+.input, .select {
+    width: 100%;
+    background-color: #0f172a !important; /* Fondo oscuro */
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #e2e8f0 !important; /* Texto claro */
+    padding: 10px 12px;
+    border-radius: 8px;
+    outline: none;
+    font-size: 0.95rem;
+    transition: border-color 0.3s ease;
+}
+
+.input:focus, .select:focus {
+    border-color: #3b82f6 !important;
+    background-color: #1e293b !important;
+}
+
+/* Arreglo para opciones del select en Chrome/Windows */
+.select option {
+    background-color: #0f172a;
+    color: white;
+}
+
+/* 2. TARJETAS DE CONTACTO (Grid) */
+.contact-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #1e293b; /* Fondo gris azulado oscuro */
+    border: 1px solid rgba(255,255,255,0.05);
+    border-left: 4px solid #3b82f6; /* Borde azul por defecto */
+    border-radius: 12px;
+    padding: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.contact-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+.contact-card.inactive {
+    opacity: 0.6;
+    background-color: #162032; /* Más oscuro si está inactivo */
+    border-left-color: #64748b;
+}
+
+/* Parte izquierda de la tarjeta */
+.contact-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+    min-width: 0;
+}
+
+/* Icono */
+.icon-box {
+    width: 50px;
+    height: 50px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e2e8f0;
+    flex-shrink: 0;
+}
+
+/* 3. INFO BOX (Aquí estaba el problema del cuadro blanco) */
+.info-box {
+    flex: 1;
+    min-width: 0;
+    background: transparent !important; /* Aseguramos que no tenga fondo blanco */
+}
+
+.info-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Botones dentro de la tarjeta */
+.actions-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    margin-left: 15px;
+}
+
+.btn-row {
+    display: flex;
+    gap: 8px;
+}
+
+/* 4. MODALES (Asegurar fondo oscuro) */
+.modal-content {
+    background-color: #1e293b !important;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: white;
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+/* Campos del formulario */
+.field {
+    margin-bottom: 15px;
+}
+
+.field label {
+    display: block;
+    color: #94a3b8;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+/* Botón submit del modal */
+.btn-submit {
+    width: 100%;
+    background-color: #10b981;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s;
+}
+
+.btn-submit:hover {
+    background-color: #059669;
+}

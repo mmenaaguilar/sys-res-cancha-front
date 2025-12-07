@@ -6,14 +6,24 @@ export const complexService = {
     
       search: async (filters) => {
         const sportId = filters.sport && filters.sport !== "" ? parseInt(filters.sport) : -1;
-        const distritoId = filters.location && filters.location !== "" ? parseInt(filters.location) : 0;
+
+        let depId = Number(filters.department) || 0;
+        let provId = Number(filters.province) || 0;
+        let distId = Number(filters.district) || 0;
+
+        if (distId === 0 && filters.location) {
+            distId = Number(filters.location) || 0;
+        }
 
         const payload = {
-            distrito_id: distritoId,     
-            tipoDeporte_id: sportId, // PHP espera 'tipoDeporte_id'
+            departamento_id: depId,
+            provincia_id: provId,
+            distrito_id: distId,
+            tipoDeporte_id: sportId,
             fecha: filters.date,
-            hora: filters.time || '' // Enviamos vacío si es "Cualquier hora"
+            hora: filters.time || ''
         };
+        
         
         console.log("🚀 Payload búsqueda:", payload);
         return await http.request('/api/alquiler/buscar-complejos-disponibles', 'POST', payload);
@@ -155,29 +165,27 @@ export const complexService = {
     toggleStatus: async (id) => http.request(`/api/complejos/status/${id}`, 'PUT'),
     delete: async (id) => http.request(`/api/complejos/${id}`, 'DELETE'),
 
-    getPublicDetails: async (id) => {
+getPublicDetails: async (id) => {
         try {
-            // 1. Info Complejo
-            const response = await http.request(`/api/complejo-publico/${id}`, 'GET');
-            
-            // Desempaquetar: Si viene { success: true, data: {...} } tomamos .data
-            // Si viene directo {...}, tomamos response
-            const complex = response.data || response;
+            // Hacemos las 3 peticiones en paralelo para que sea rápido
+            const [complexRes, canchasRes, serviciosRes] = await Promise.all([
+                http.request(`/api/complejo-publico/${id}`, 'GET'),
+                http.request('/api/canchas/list', 'POST', { complejo_id: id, estado: 'activo', limit: 50 }),
+                http.request('/api/servicios/list', 'POST', { complejo_id: id, limit: 20 }) // <-- Petición de Servicios
+            ]);
 
-            // Validación robusta: verificar si tiene ID
-            if (!complex || !complex.complejo_id) {
-                console.error("Respuesta inválida del servidor:", response);
-                throw new Error("Complejo no encontrado o respuesta inválida");
-            }
+            // Procesar Complejo
+            const complex = complexRes.data || complexRes;
+            if (!complex || !complex.complejo_id) throw new Error("Complejo no encontrado");
 
-            // 2. Obtener Canchas
-            const canchasRes = await http.request('/api/canchas/list', 'POST', { 
-                complejo_id: id,
-                estado: 'activo', 
-                limit: 50 
-            });
-
+            // Procesar Canchas
             const canchas = Array.isArray(canchasRes) ? canchasRes : (canchasRes.data || []);
+
+            // Procesar Servicios
+            const servicios = Array.isArray(serviciosRes) ? serviciosRes : (serviciosRes.data || []);
+            
+            // Inyectamos los servicios dentro del objeto complejo para que la vista lo lea fácil
+            complex.servicios = servicios; 
 
             return { complex, canchas };
 
@@ -185,7 +193,7 @@ export const complexService = {
             console.error("Error en getPublicDetails:", error);
             throw error;
         }
-    },  
+    },
 
     getActiveLocations: async () => {
         try {

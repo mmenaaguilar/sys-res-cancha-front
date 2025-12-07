@@ -88,6 +88,7 @@ const api = {
     cancelarReserva: bookingService.cancel,
     getBookingAvailability: bookingService.getAvailability,
     getCanchaInfo: bookingService.getCanchaInfo,
+    getMyReservations: bookingService.getMyReservations,
 
 
     getGestores: managerService.list,
@@ -107,6 +108,8 @@ const api = {
     addFavorite: favoriteService.add,
     removeFavorite: favoriteService.remove,
     getFavoritesList: favoriteService.getList,
+
+    getPaymentMethods: bookingService.getPaymentMethods,
 
 };
 
