@@ -89,6 +89,7 @@ const api = {
     getBookingAvailability: bookingService.getAvailability,
     getCanchaInfo: bookingService.getCanchaInfo,
     getMyReservations: bookingService.getMyReservations,
+    getUserCredits: bookingService.getUserCredits, 
 
 
     getGestores: managerService.list,
