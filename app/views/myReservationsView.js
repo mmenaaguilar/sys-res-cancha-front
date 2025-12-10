@@ -243,9 +243,11 @@ const createReservationCard = (res) => {
     return `
         <div class="reservation-card ${statusClass} fade-in">
             <div class="res-main">
-                <span class="badge-sport">${ICONS.sport} ${res.deporte || 'Deporte'}</span>
+                <span class="badge-sport">${ICONS.sport} ${
+      res.deporte || "Deporte"
+    }</span>
                 
-                <h3>${res.complejo_nombre || 'Complejo Deportivo'}</h3>
+                <h3>${res.complejo_nombre || "Complejo Deportivo"}</h3>
                 
                 <div class="res-details">
                     <div class="detail-item highlight">
@@ -258,16 +260,22 @@ const createReservationCard = (res) => {
 
                 <div class="res-details">
                     <div class="detail-item">
-                        ${ICONS.location} ${res.cancha_nombre || 'Cancha'}
+                        ${ICONS.location} ${res.cancha_nombre || "Cancha"}
                     </div>
                 </div>
             </div>
             
             <div class="res-aside">
-                <span class="res-price">S/ ${parseFloat(res.precio).toFixed(2)}</span>
+                <span class="res-price">S/ ${parseFloat(res.total_pago).toFixed(
+                  2
+                )}</span>
                 <span class="res-status-badge ${badgeClass}">${labelText}</span>
                 
-                ${canCancel ? `<button class="btn-cancel" data-id="${res.reserva_id}">Cancelar</button>` : ''}
+                ${
+                  canCancel
+                    ? `<button class="btn-cancel" data-id="${res.reserva_id}">Cancelar</button>`
+                    : ""
+                }
             </div>
         </div>
     `;
