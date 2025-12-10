@@ -17,7 +17,7 @@ export function getAbsoluteImageUrl(relativePath) {
     cleanPath = cleanPath.replace(/^\//, '');
     
     // ⚠️ Ajusta este puerto si tu backend no corre en el 8000
-    const baseUrl = 'http://localhost:8000'; 
+    const baseUrl = "https://sys-res-cancha-back.onrender.com"; 
     return `${baseUrl}/${cleanPath}`;
 }
 
