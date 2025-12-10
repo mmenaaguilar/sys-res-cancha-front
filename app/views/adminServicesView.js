@@ -92,7 +92,7 @@ const adminServicesView = {
                             <label>Precio (S/.) *</label>
                             <div class="input-group" style="position:relative;">
                                 <span style="position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--text-muted);">S/.</span>
-                                <input type="number" id="sMonto" class="input" required min="0" step="0.01" style="padding-left:35px;" placeholder="0.00">
+                                <input type="number" id="sMonto" class="input" step="0.01" style="padding-left:35px;" placeholder="0.00">
                             </div>
                         </div>
 
