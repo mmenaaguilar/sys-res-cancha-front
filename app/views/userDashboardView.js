@@ -235,7 +235,7 @@ const userDashboardView = {
                             <p>Contáctanos si tienes problemas con tus reservas o tu cuenta.</p>
                         </div>
                     </div>
-                    <button class="btn-contact">Contactar Soporte</button>
+                   <h3> Contacto: +51 999996219 </h3>
                 </div>
 
                 <footer class="dash-footer">
