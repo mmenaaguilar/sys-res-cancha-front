@@ -1,11 +1,42 @@
 import http from "./httpClient.js";
 import { authService } from "./auth.service.js";
+import { toast } from "../utils/toast.js";
 
 export const complexService = {
     
-    search: async (filters) => {
-        const payload = { distrito: filters.location || '', fecha: filters.date, hora: filters.time, tipo_deporte_id: filters.sport };
+      search: async (filters) => {
+        const sportId = filters.sport && filters.sport !== "" ? parseInt(filters.sport) : -1;
+
+        let depId = Number(filters.department) || 0;
+        let provId = Number(filters.province) || 0;
+        let distId = Number(filters.district) || 0;
+
+        if (distId === 0 && filters.location) {
+            distId = Number(filters.location) || 0;
+        }
+
+        const payload = {
+            departamento_id: depId,
+            provincia_id: provId,
+            distrito_id: distId,
+            tipoDeporte_id: sportId,
+            fecha: filters.date,
+            hora: filters.time || ''
+        };
+        
+        
+        console.log("🚀 Payload búsqueda:", payload);
         return await http.request('/api/alquiler/buscar-complejos-disponibles', 'POST', payload);
+     },
+
+    getActiveLocations: async () => {
+        try {
+            const res = await http.request('/api/complejos/ubicaciones-activas', 'GET');
+            return Array.isArray(res) ? res : (res.data || []);
+        } catch (e) {
+            console.error("Error cargando ubicaciones:", e);
+            return [];
+        }
     },
 
     getSports: async () => {
@@ -132,5 +163,57 @@ export const complexService = {
     },
 
     toggleStatus: async (id) => http.request(`/api/complejos/status/${id}`, 'PUT'),
-    delete: async (id) => http.request(`/api/complejos/${id}`, 'DELETE')
+    delete: async (id) => http.request(`/api/complejos/${id}`, 'DELETE'),
+
+getPublicDetails: async (id) => {
+        try {
+            // Hacemos las 3 peticiones en paralelo para que sea rápido
+            const [complexRes, canchasRes, serviciosRes] = await Promise.all([
+                http.request(`/api/complejo-publico/${id}`, 'GET'),
+                http.request('/api/canchas/list', 'POST', { complejo_id: id, estado: 'activo', limit: 50 }),
+                http.request('/api/servicios/list', 'POST', { complejo_id: id, limit: 20 }) // <-- Petición de Servicios
+            ]);
+
+            // Procesar Complejo
+            const complex = complexRes.data || complexRes;
+            if (!complex || !complex.complejo_id) throw new Error("Complejo no encontrado");
+
+            // Procesar Canchas
+            const canchas = Array.isArray(canchasRes) ? canchasRes : (canchasRes.data || []);
+
+            // Procesar Servicios
+            const servicios = Array.isArray(serviciosRes) ? serviciosRes : (serviciosRes.data || []);
+            
+            // Inyectamos los servicios dentro del objeto complejo para que la vista lo lea fácil
+            complex.servicios = servicios; 
+
+            return { complex, canchas };
+
+        } catch (error) {
+            console.error("Error en getPublicDetails:", error);
+            throw error;
+        }
+    },
+
+    getActiveLocations: async () => {
+        try {
+            // Llama a la nueva ruta que creamos
+            const res = await http.request('/api/complejos/ubicaciones-activas', 'GET');
+            return Array.isArray(res) ? res : (res.data || []);
+        } catch (e) {
+            console.error("Error cargando ubicaciones:", e);
+            return [];
+        }
+    },
+
+    // 🛠️ FIX DEPORTE: Agregamos logs para ver qué devuelve el backend
+    getSports: async () => {
+        try { 
+            const res = await http.request('/api/tipo-deporte/combo');
+            // Si retorna undefined, devuelve array vacío
+            return Array.isArray(res) ? res : (res.data || []); 
+        } catch(e) { return []; }
+    },
+
+    
 };

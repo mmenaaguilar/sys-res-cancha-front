@@ -16,16 +16,11 @@ let state = {
     isSubmitting: false
 };
 
-const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-
-// --- ICONOS SVG ---
-const ICON_WEEKLY = `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-right:6px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
-const ICON_SPECIAL = `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-right:6px;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+// --- ICONOS SVG (Sin cambios) ---
 const ICON_CLOCK = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
 const ICON_ALERT = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
 const ICON_CHECK = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
 
-// Helper para obligatoriedad (Acepta 1, "1", true, "true")
 function isTrue(val) {
     if (val === undefined || val === null) return false;
     const s = String(val).toLowerCase();
@@ -34,6 +29,11 @@ function isTrue(val) {
 
 const adminServicioHorariosView = {
   render: async (params) => {
+    // Reseteamos estado al entrar
+    state.isEditing = false;
+    state.currentEditId = null;
+    state.isSubmitting = false;
+
     state.servicioId = params.id;
     if (!state.servicioId) { navigate("/admin/servicios"); return ""; }
     
@@ -89,14 +89,6 @@ const adminServicioHorariosView = {
                                     <span style="font-size:0.9rem; color:white; display:block;">¿Es Obligatorio?</span>
                                     <span style="font-size:0.7rem; color:var(--text-muted);">Si se activa, se cobrará siempre automáticamente.</span>
                                 </div>
-                            </div>
-
-                            <div class="field" id="divEstado" style="display:none; margin-top:15px;">
-                                <label class="small">Estado</label>
-                                <select id="shEstado" class="select">
-                                    <option value="activo">Activo</option>
-                                    <option value="inactivo">Inactivo</option>
-                                </select>
                             </div>
 
                             <div style="display:flex; gap:10px; margin-top:20px;">
@@ -170,8 +162,7 @@ const adminServicioHorariosView = {
 
       document.getElementById('selHorarioBase').addEventListener('change', (e) => {
           const val = e.target.value;
-          document.getElementById('btnSubmit').disabled = !val;
-          document.getElementById('btnSubmit').style.opacity = val ? '1' : '0.5';
+          updateSubmitButtonState(val);
           
           const details = document.getElementById('horarioDetails');
           if(val) {
@@ -187,26 +178,30 @@ const adminServicioHorariosView = {
           e.preventDefault();
           if(state.isSubmitting) return;
           state.isSubmitting = true;
-          const btn = document.getElementById('btnSubmit'); const txt = btn.textContent; btn.textContent = "Guardando..."; btn.disabled = true;
+          const btn = document.getElementById('btnSubmit'); 
+          const originalText = btn.textContent; 
+          btn.textContent = "Guardando..."; btn.disabled = true;
 
-          let horarioId = document.getElementById('selHorarioBase').value;
-          if (state.isEditing && !horarioId) {
-             const item = state.horariosAsignados.find(x => x.id == state.currentEditId);
-             horarioId = item.horarioBase_id;
+          const horarioId = document.getElementById('selHorarioBase').value;
+          
+          // 🔥 Recuperar el estado actual si editamos, o 'activo' si creamos
+          let estadoEnvio = 'activo';
+          if (state.isEditing) {
+              const item = state.horariosAsignados.find(x => x.id == state.currentEditId);
+              if(item) estadoEnvio = item.estado;
           }
 
           const data = {
               servicio_id: state.servicioId,
               horarioBase_id: horarioId,
               is_obligatorio: document.getElementById('shObligatorio').checked ? 1 : 0,
-              estado: state.isEditing ? document.getElementById('shEstado').value : 'activo'
+              estado: estadoEnvio
           };
 
           try {
               if (state.isEditing) {
                   await api.updateServicioHorario(state.currentEditId, data);
                   toast.success("Asignación actualizada");
-                  // Resetear el formulario completamente tras actualizar
                   cancelEdit();
               } else {
                   await api.createServicioHorario(data);
@@ -214,19 +209,13 @@ const adminServicioHorariosView = {
                   document.getElementById('shObligatorio').checked = true;
               }
               await loadList(); 
-          } catch (err) { toast.error(err.message || "Error al guardar"); }
-          finally { 
-            state.isSubmitting = false; 
-            // Si no estamos editando (es decir, fue creación o se canceló edición), habilitar si corresponde
-            if (!state.isEditing) {
-                 btn.textContent = "Asignar";
-                 // Mantener disabled si no hay selección
-                 if (!document.getElementById('selHorarioBase').value) {
-                     btn.disabled = true;
-                 } else {
-                     btn.disabled = false;
-                 }
-            }
+          } catch (err) { 
+              toast.error(err.message || "Error al guardar");
+              // Si falla, reactivamos el botón
+              btn.textContent = originalText;
+              btn.disabled = false;
+          } finally { 
+              state.isSubmitting = false;
           }
       });
 
@@ -235,10 +224,13 @@ const adminServicioHorariosView = {
       document.getElementById('btnCancel').addEventListener('click', cancelEdit);
       window.cancelEdit = cancelEdit;
 
+      // 🔥 Lógica de EDICIÓN MEJORADA
       window.editSH = async (id) => {
           const item = state.horariosAsignados.find(x => x.id == id);
           if(!item) return;
-          state.isEditing = true; state.currentEditId = id;
+          
+          state.isEditing = true; 
+          state.currentEditId = id;
           
           document.getElementById('formTitle').textContent = "Editar Asignación";
           const btn = document.getElementById('btnSubmit');
@@ -248,19 +240,29 @@ const adminServicioHorariosView = {
 
           document.getElementById('btnCancel').style.display = "block";
           
-          document.getElementById('selCancha').disabled = true;
-          
-          // ✅ CORRECCIÓN: Mostrar nombre legible del caché en lugar del ID crudo
+          // 1. Obtener la cancha asociada desde nuestro caché mejorado
           const cachedInfo = state.allHorariosCache[item.horarioBase_id];
-          const displayLabel = cachedInfo ? cachedInfo.label : `Horario Agendado`;
           
-          document.getElementById('selHorarioBase').innerHTML = `<option value="${item.horarioBase_id}" selected>${displayLabel}</option>`;
-          document.getElementById('selHorarioBase').disabled = true;
+          if (cachedInfo && cachedInfo.canchaId) {
+             // 2. Seleccionar la cancha
+             document.getElementById('selCancha').value = cachedInfo.canchaId;
+             document.getElementById('selCancha').disabled = false; // 🔥 HABILITADO
+
+             // 3. Cargar los horarios de esa cancha (esperamos a que termine)
+             await loadHorariosBase(cachedInfo.canchaId);
+             
+             // 4. Seleccionar el horario específico
+             document.getElementById('selHorarioBase').value = item.horarioBase_id;
+             document.getElementById('selHorarioBase').disabled = false; // 🔥 HABILITADO
+          } else {
+              // Fallback si algo falló con el caché
+              toast.error("No se pudo detectar la cancha original. Por favor selecciónala de nuevo.");
+              document.getElementById('selCancha').disabled = false;
+              document.getElementById('selCancha').value = "";
+              resetHorariosSelect();
+          }
           
           document.getElementById('shObligatorio').checked = isTrue(item.is_obligatorio);
-          
-          document.getElementById('divEstado').style.display = "block";
-          document.getElementById('shEstado').value = item.estado || 'activo';
       };
 
       window.deleteSH = async (id) => {
@@ -287,6 +289,18 @@ const adminServicioHorariosView = {
   }
 };
 
+function updateSubmitButtonState(val) {
+    const btn = document.getElementById('btnSubmit');
+    if (!btn) return;
+    if (val) {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+    } else {
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+    }
+}
+
 function cancelEdit() {
     state.isEditing = false;
     state.currentEditId = null;
@@ -309,9 +323,6 @@ function cancelEdit() {
     const btnCancel = document.getElementById('btnCancel');
     if(btnCancel) btnCancel.style.display = "none";
 
-    const divEstado = document.getElementById('divEstado');
-    if(divEstado) divEstado.style.display = "none";
-
     const selCancha = document.getElementById('selCancha');
     if(selCancha) {
         selCancha.disabled = false;
@@ -327,13 +338,10 @@ function resetHorariosSelect() {
         sel.innerHTML = '<option value="">Primero selecciona cancha</option>';
         sel.disabled = true;
     }
-    const btn = document.getElementById('btnSubmit');
-    if(btn) {
-        btn.disabled = true;
-        btn.style.opacity = '0.5';
-    }
     const details = document.getElementById('horarioDetails');
     if(details) details.style.display = 'none';
+    
+    updateSubmitButtonState(false);
 }
 
 async function loadInitialData() {
@@ -351,11 +359,13 @@ async function loadInitialData() {
                 selCancha.innerHTML = '<option value="">No hay canchas</option>';
             }
             
+            // 🔥 CLAVE: Guardamos el ID de la cancha en el caché
             for (let c of canchas) {
                  const hList = await api.getHorariosBase(c.cancha_id);
                  hList.forEach(h => {
                      state.allHorariosCache[h.horario_base_id] = {
-                         label: `${c.nombre} | ${h.dia_semana} ${h.hora_inicio.substring(0,5)}-${h.hora_fin.substring(0,5)}`
+                         label: `${c.nombre} | ${h.dia_semana} ${h.hora_inicio.substring(0,5)}-${h.hora_fin.substring(0,5)}`,
+                         canchaId: c.cancha_id // GUARDAMOS ESTO PARA USARLO AL EDITAR
                      };
                  });
             }
@@ -379,7 +389,7 @@ async function loadHorariosBase(canchaId) {
                 }).join('');
             selHorario.disabled = false;
         } else {
-            selHorario.innerHTML = '<option value="">Sin horarios</option>';
+            selHorario.innerHTML = '<option value="">Sin horarios configurados</option>';
         }
     } catch (e) { selHorario.innerHTML = '<option value="">Error</option>'; }
 }

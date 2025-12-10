@@ -16,3 +16,8 @@
 /* 3. LAYOUTS (Estructuras de página específicas) */
 @import 'layouts/public.css';
 @import 'layouts/admin.css';
+@import 'components/navigation.css';
+@import 'views/search-results.css';
+@import 'views/complex-details.css';
+@import 'views/favorites.css';
+@import 'views/booking.css';

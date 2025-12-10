@@ -56,6 +56,10 @@ function parseCoordsFromUrl(url) {
 
 const adminComplejoFormView = {
   render: async (params) => {
+
+    state.isSubmitting = false;
+    state.complejo = null;
+    
     if (!api.isLoggedIn()) { navigate("/"); return ""; }
     const user = api.getUser();
     
@@ -299,19 +303,22 @@ const adminComplejoFormView = {
         btn.innerHTML = `Guardando...`; btn.disabled = true;
 
         const file = document.getElementById('cFile').files[0];
-        
+                
         const data = {
             nombre: document.getElementById('cNombre').value,
             direccion_detalle: document.getElementById('cDir').value,
             descripcion: document.getElementById('cDesc').value,
-            estado: 'activo',
-            departamento_id: document.getElementById('cDep').value || c.departamento_id,
-            provincia_id: document.getElementById('cProv').value || c.provincia_id,
-            distrito_id: document.getElementById('cDist').value || c.distrito_id,
+            estado: 'activo', // Ojo: ¿siempre activo o deberías leer el estado actual?
+            
+            // 🔥 CORRECCIÓN AQUÍ: Quitamos los "|| c.id"
+            departamento_id: document.getElementById('cDep').value,
+            provincia_id: document.getElementById('cProv').value,
+            distrito_id: document.getElementById('cDist').value,
             
             file: file || null,
+            // La lógica de imagen está bien, si no hay archivo nuevo, mantenemos la URL original
             url_imagen: !file ? state.originalImageUrl : null, 
-            url_map: document.getElementById('cMapUrlFinal').value || c.url_map
+            url_map: document.getElementById('cMapUrlFinal').value
         };
 
         try {
