@@ -153,7 +153,7 @@ const userProfileView = {
         <!-- Créditos -->
         <div class="profile-credits">
           <h3>Créditos Disponibles</h3>
-          <div class="credits-amount">${creditos}</div>
+          <div class="credits-amount">S/ ${creditos}</div>
         </div>
 
         <!-- Formulario de perfil -->
